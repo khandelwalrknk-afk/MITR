@@ -1,0 +1,2645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MITR — Books of Account & Backup Reckoner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0B1D3A;
+    --gold: #C8A44E;
+    --cream: #FDF8EF;
+    --white: #FFFFFF;
+    --border: #E2D9C8;
+    --text-primary: #0B1D3A;
+    --text-secondary: #5C6B7A;
+    --green: #1A6B3C;
+    --green-bg: #E8F5EE;
+    --red: #8B1A1A;
+    --red-bg: #FAE8E8;
+    --amber: #7A5000;
+    --amber-bg: #FFF3DC;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .site-header {
+    background: var(--navy);
+    padding: 16px 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .mitr-wordmark {
+    font-family: 'DM Serif Display', serif;
+    color: var(--gold);
+    font-size: 22px;
+    letter-spacing: 0.5px;
+  }
+  .mitr-wordmark span {
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    display: block;
+    letter-spacing: 0;
+  }
+  .ty-badge {
+    background: rgba(200,164,78,0.18);
+    color: var(--gold);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(200,164,78,0.3);
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .tool-title {
+    color: #fff;
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    margin-bottom: 2px;
+  }
+  .tool-subtitle {
+    color: rgba(255,255,255,0.55);
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  /* TAB BAR */
+  .tab-bar {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: 0 0 auto;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    min-height: 44px;
+    transition: color 0.2s;
+  }
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 20px 16px 100px; }
+  .tab-content.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+  }
+  .card-accent {
+    border-left: 4px solid var(--gold);
+    padding-left: 14px;
+  }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .card-body {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* SECTION CHIPS */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  .chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: var(--navy);
+    color: var(--gold);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+  .chip-arrow { color: rgba(200,164,78,0.6); margin: 0 2px; }
+
+  /* FORM ELEMENTS */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .form-label .hint {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+  select, input[type="number"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--navy);
+    background: var(--white);
+    appearance: none;
+    -webkit-appearance: none;
+    min-height: 44px;
+  }
+  select:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold);
+    pointer-events: none;
+    font-size: 14px;
+  }
+  .radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .radio-opt {
+    flex: 1 1 calc(50% - 5px);
+  }
+  .radio-opt input[type="radio"] { display: none; }
+  .radio-opt label {
+    display: block;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13.5px;
+    cursor: pointer;
+    text-align: center;
+    color: var(--text-secondary);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .radio-opt input[type="radio"]:checked + label {
+    border-color: var(--gold);
+    color: var(--navy);
+    background: rgba(200,164,78,0.08);
+    font-weight: 600;
+  }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 48px;
+    margin-top: 4px;
+    letter-spacing: 0.2px;
+  }
+  .btn-primary:active { opacity: 0.85; }
+
+  /* RESULT BOXES */
+  .result-box {
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .result-box.green { background: var(--green-bg); border-left: 4px solid var(--green); }
+  .result-box.red { background: var(--red-bg); border-left: 4px solid var(--red); }
+  .result-box.amber { background: var(--amber-bg); border-left: 4px solid var(--gold); }
+  .result-box.navy { background: rgba(11,29,58,0.05); border-left: 4px solid var(--navy); }
+
+  .result-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .result-box.green .result-label { color: var(--green); }
+  .result-box.red .result-label { color: var(--red); }
+  .result-box.amber .result-label { color: var(--amber); }
+  .result-box.navy .result-label { color: var(--navy); }
+
+  .result-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  .result-box.green .result-value { color: var(--green); }
+  .result-box.red .result-value { color: var(--red); }
+  .result-box.amber .result-value { color: var(--amber); }
+  .result-box.navy .result-value { color: var(--navy); }
+
+  .result-note { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* TABLE */
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .ref-table th {
+    background: var(--navy);
+    color: var(--gold);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  .ref-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    vertical-align: top;
+  }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table tr:nth-child(even) td { background: rgba(253,248,239,0.6); }
+  .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 14px; }
+
+  /* BOOKS LIST */
+  .books-list { list-style: none; padding: 0; }
+  .books-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .books-list li:last-child { border-bottom: none; }
+  .books-list .icon {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--navy);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  /* SECTION HEADING */
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .section-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  /* RESULT HIDDEN */
+  #results-panel { display: none; }
+
+  .btn-secondary {
+    background: var(--white);
+    color: var(--navy);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 48px;
+  }
+  .btn-secondary:active { background: var(--cream); }
+
+  .result-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+  .btn-action {
+    flex: 1;
+    background: rgba(200,164,78,0.12);
+    color: var(--navy);
+    border: 1.5px solid var(--gold);
+    border-radius: 8px;
+    padding: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .btn-action:active { background: rgba(200,164,78,0.25); }
+
+  @media print {
+    body { background: #fff; }
+    .site-header, .tab-bar, .site-footer,
+    #scenario-grid-spec, .scenario-btn, #scenario-desc,
+    .result-actions, .btn-primary, .btn-secondary,
+    #flow-wrap, .card-title:first-child { display: none !important; }
+    .tab-content:not(.active) { display: none !important; }
+    .card, .result-box { border: 1px solid #ccc !important; box-shadow: none !important; page-break-inside: avoid; }
+    #results-panel { display: block !important; }
+  }
+
+  /* PROFESSIONS GRID V2 */
+  .prof-grid-v2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .prof-tile {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .prof-tile-expand { cursor: pointer; }
+  .prof-tile-expand:active, .prof-tile-expand.open {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1px var(--gold);
+  }
+  .prof-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+  .prof-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+  .prof-label .prof-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 500;
+  }
+  .prof-sub {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .prof-tap {
+    font-size: 10px;
+    color: var(--gold);
+    font-weight: 500;
+    display: block;
+    margin-top: 2px;
+  }
+  .prof-detail {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: rgba(200,164,78,0.08);
+    border-radius: 8px;
+    border-left: 3px solid var(--gold);
+  }
+  .prof-detail-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .prof-detail-body {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  .site-footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    padding: 16px;
+    font-size: 11.5px;
+    margin-top: 24px;
+  }
+  .site-footer a { color: var(--gold); text-decoration: none; }
+
+  /* AUDIT FLOW */
+  .flow-step {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+  .flow-num {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  .flow-text { font-size: 13.5px; line-height: 1.55; }
+  .flow-text strong { color: var(--navy); }
+
+  .scenario-btn {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--navy);
+    cursor: pointer;
+    min-height: 44px;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .scenario-btn:active, .scenario-btn.selected {
+    border-color: var(--gold);
+    background: rgba(200,164,78,0.1);
+    color: var(--navy);
+  }
+
+  /* FLOWCHART */
+  .flow-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .flow-tab {
+    flex: 1;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    min-height: 40px;
+  }
+  .flow-tab.active {
+    border-color: var(--gold);
+    background: rgba(200,164,78,0.1);
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .flow-diagram { display: flex; flex-direction: column; align-items: center; }
+  .fnode {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    text-align: center;
+    color: var(--navy);
+    max-width: 320px;
+    width: 100%;
+    line-height: 1.4;
+  }
+  .fnode-start {
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+  }
+  .fnode-q {
+    background: var(--cream);
+    border-color: var(--gold);
+    font-weight: 500;
+  }
+  .fconn {
+    width: 2px;
+    height: 18px;
+    background: var(--gold);
+    margin: 4px 0;
+  }
+  .fconn-short {
+    width: 2px;
+    height: 12px;
+    background: var(--gold);
+    margin: 3px 0;
+  }
+  .fbranch {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 360px;
+    margin: 6px 0;
+    align-items: flex-start;
+  }
+  .fbranch-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .fbranch-label {
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--gold);
+    font-weight: 500;
+    margin: 2px 0;
+  }
+  .fmini { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; }
+  .fresult-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 360px;
+    margin-top: 8px;
+  }
+  .fnode-result {
+    flex: 1;
+    font-size: 12px;
+  }
+  .fnode-result strong { font-size: 13px; }
+  .fnode-result span { font-size: 11px; color: var(--text-secondary); }
+  .fnode-yes {
+    background: var(--amber-bg);
+    border-color: var(--gold);
+  }
+  .fnode-yes strong { color: var(--amber); }
+  .fnode-no {
+    background: var(--green-bg);
+    border-color: var(--green);
+  }
+  .fnode-no strong { color: var(--green); }
+  .fnote {
+    margin-top: 14px;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    text-align: center;
+    line-height: 1.5;
+    padding: 8px 12px;
+    background: rgba(11,29,58,0.04);
+    border-radius: 8px;
+    max-width: 360px;
+  }
+  .animate-in {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: fadeInUp 0.45s ease forwards;
+  }
+  @keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (min-width: 600px) {
+    .tab-content { max-width: 720px; margin: 0 auto; }
+    .prof-grid-v2 { grid-template-columns: 1fr 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-top">
+    <div>
+      <div class="mitr-wordmark">MITR <span>Master Income Tax Reckoner</span></div>
+    </div>
+  </div>
+  <div class="tool-title">Books of Account &amp; Backup Reckoner</div>
+  <div class="tool-subtitle">Sec 44AA → Sec 62 &nbsp;·&nbsp; Sec 44AD / 44ADA → Sec 58 &nbsp;·&nbsp; Rule 6F → Rule 46 &nbsp;·&nbsp; IT Act 1961 / IT Act 2025</div>
+
+  <nav class="tab-bar" role="tablist">
+    <button class="tab-btn active" onclick="showTab('tab-books')" role="tab">Prescribed Books</button>
+    <button class="tab-btn" onclick="showTab('tab-professions')" role="tab">Profession List</button>
+    <button class="tab-btn" onclick="showTab('tab-checker')" role="tab">Eligibility Checker</button>
+    <button class="tab-btn" onclick="showTab('tab-form26')" role="tab">Tax Audit Report</button>
+    <button class="tab-btn" onclick="showTab('tab-coact')" role="tab">Companies Act</button>
+    <button class="tab-btn" onclick="showTab('tab-gst')" role="tab">GST</button>
+    <button class="tab-btn" onclick="showTab('tab-compare')" role="tab">Laws Comparison</button>
+    <button class="tab-btn" onclick="showTab('tab-company')" role="tab">Company Compliance</button>
+    <button class="tab-btn" onclick="showTab('tab-backup')" role="tab">Electronic Backup</button>
+    <button class="tab-btn" onclick="showTab('tab-cloud')" role="tab">Cloud &amp; Backup Solutions</button>
+  </nav>
+</header>
+
+<!-- ============================== TAB 1: CHECKER ============================== -->
+<div id="tab-checker" class="tab-content">
+  <h2 class="section-heading">Books of Account Checker</h2>
+  <p class="section-sub">Input assessee profile to determine books obligation and applicable category.</p>
+
+  <!-- DECISION FLOWCHART -->
+  <div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleFlow()">
+      <div class="card-title" style="margin:0;">Decision Flowchart</div>
+      <span id="flow-toggle" style="font-size:12px;color:var(--gold);font-weight:600;">show ▾</span>
+    </div>
+    <div id="flow-wrap" style="display:none;margin-top:14px;">
+      <div class="flow-tabs">
+        <button class="flow-tab active" id="ft-spec" onclick="showFlow('spec')">Specified Profession</button>
+        <button class="flow-tab" id="ft-ns" onclick="showFlow('ns')">Non-Specified &amp; Business</button>
+      </div>
+
+      <!-- SPECIFIED FLOW -->
+      <div id="flow-spec" class="flow-diagram">
+        <div class="fnode fnode-start animate-in" style="animation-delay:0.05s;">Specified Profession</div>
+        <div class="fconn animate-in" style="animation-delay:0.15s;"></div>
+        <div class="fnode fnode-q animate-in" style="animation-delay:0.25s;">Newly set up this Tax Year?</div>
+        <div class="fbranch">
+          <div class="fbranch-col">
+            <div class="fbranch-label animate-in" style="animation-delay:0.35s;">YES — new</div>
+            <div class="fconn-short animate-in" style="animation-delay:0.4s;"></div>
+            <div class="fnode fnode-q animate-in" style="animation-delay:0.45s;">Expected receipts likely to exceed ₹1,50,000 this year?</div>
+          </div>
+          <div class="fbranch-col">
+            <div class="fbranch-label animate-in" style="animation-delay:0.35s;">NO — existing</div>
+            <div class="fconn-short animate-in" style="animation-delay:0.4s;"></div>
+            <div class="fnode fnode-q animate-in" style="animation-delay:0.45s;">Gross receipts &gt; ₹1,50,000 in any one or more of 3 preceding years?</div>
+          </div>
+        </div>
+        <div class="fbranch">
+          <div class="fbranch-col">
+            <div class="fbranch-label animate-in" style="animation-delay:0.55s;">Yes → Cat B</div>
+            <div class="fbranch-label animate-in" style="animation-delay:0.6s;">No → Cat A</div>
+          </div>
+          <div class="fbranch-col">
+            <div class="fbranch-label animate-in" style="animation-delay:0.55s;">Yes → Cat B</div>
+            <div class="fbranch-label animate-in" style="animation-delay:0.6s;">No → Cat A</div>
+          </div>
+        </div>
+        <div class="fresult-row">
+          <div class="fnode fnode-result fnode-no animate-in" style="animation-delay:0.7s;"><strong>Category A</strong><br><span>No books prescribed</span></div>
+          <div class="fnode fnode-result fnode-yes animate-in" style="animation-delay:0.75s;"><strong>Category B</strong><br><span>Prescribed books (Rule 46)</span></div>
+        </div>
+        <div class="fnote animate-in" style="animation-delay:0.85s;">Opting presumptive (Sec 44ADA → 58) with receipts ≤ ₹75L → no books required.</div>
+      </div>
+
+      <!-- NON-SPECIFIED FLOW -->
+      <div id="flow-ns" class="flow-diagram" style="display:none;">
+        <div class="fnode fnode-start animate-in" style="animation-delay:0.05s;">Non-Specified Profession / Business</div>
+        <div class="fconn animate-in" style="animation-delay:0.15s;"></div>
+        <div class="fnode fnode-q animate-in" style="animation-delay:0.25s;">Opting presumptive (Sec 44AD/44ADA → 58)?</div>
+        <div class="fbranch">
+          <div class="fbranch-col">
+            <div class="fbranch-label animate-in" style="animation-delay:0.35s;">YES — presumptive</div>
+            <div class="fconn-short animate-in" style="animation-delay:0.4s;"></div>
+            <div class="fnode fnode-q animate-in" style="animation-delay:0.45s;">Declaring profit lower than deemed rate?</div>
+            <div class="fmini">
+              <div class="fnode fnode-result fnode-no animate-in" style="animation-delay:0.55s;">No → No books</div>
+              <div class="fnode fnode-result fnode-yes animate-in" style="animation-delay:0.6s;">Yes → Cat D</div>
+            </div>
+          </div>
+          <div class="fbranch-col">
+            <div class="fbranch-label animate-in" style="animation-delay:0.35s;">NO — normal</div>
+            <div class="fconn-short animate-in" style="animation-delay:0.4s;"></div>
+            <div class="fnode fnode-q animate-in" style="animation-delay:0.45s;">Income or turnover crossed threshold in any of 3 preceding years?</div>
+            <div class="fmini">
+              <div class="fnode fnode-result fnode-no animate-in" style="animation-delay:0.55s;">No → Cat C<br><span>No books</span></div>
+              <div class="fnode fnode-result fnode-yes animate-in" style="animation-delay:0.6s;">Yes → Cat D<br><span>Books, not prescribed</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="fnote animate-in" style="animation-delay:0.7s;"><strong>Thresholds:</strong> Individual/HUF — income &gt; ₹2.5L or turnover &gt; ₹25L. Others — income &gt; ₹1.2L or turnover &gt; ₹10L.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <div class="radio-group">
+        <div class="radio-opt">
+          <input type="radio" name="category" id="cat-specified" value="specified" onchange="onCategoryChange()">
+          <label for="cat-specified">Specified Profession</label>
+        </div>
+        <div class="radio-opt">
+          <input type="radio" name="category" id="cat-nonspec" value="nonspec" onchange="onCategoryChange()">
+          <label for="cat-nonspec">Non-Specified Profession &amp; Business</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPECIFIED PROFESSION FIELDS -->
+    <div id="fields-specified" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Profession <span class="hint">(select one)</span></label>
+        <div class="select-wrap">
+          <select id="profession-select">
+            <option value="">— Select profession —</option>
+            <option value="legal">Legal (Advocate / Solicitor)</option>
+            <option value="medical">Medical (Doctor / Surgeon / etc.)</option>
+            <option value="engineering">Engineering</option>
+            <option value="architectural">Architectural</option>
+            <option value="accountancy">Accountancy (CA / CPA)</option>
+            <option value="technical">Technical Consultancy</option>
+            <option value="interior">Interior Decoration</option>
+            <option value="film">Film Artist</option>
+            <option value="company-secretary">Company Secretary</option>
+            <option value="information-technology">Information Technology</option>
+            <option value="authorised-representative">Authorised Representative</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Newly set up this Tax Year?</label>
+        <div class="radio-group">
+          <div class="radio-opt">
+            <input type="radio" name="newsetup" id="ns-yes" value="yes" onchange="onNewSetupChange()">
+            <label for="ns-yes">Yes (new)</label>
+          </div>
+          <div class="radio-opt">
+            <input type="radio" name="newsetup" id="ns-no" value="no" checked onchange="onNewSetupChange()">
+            <label for="ns-no">No (existing)</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" id="grp-spec-prev">
+        <label class="form-label">Gross Receipts from Profession — HIGHEST of 3 preceding Tax Years <span class="hint">(₹, books apply if any year exceeds ₹1.5L)</span></label>
+        <input type="number" id="spec-receipts-prev" placeholder="e.g. 1800000" min="0">
+      </div>
+
+      <div class="form-group" id="grp-spec-expected" style="display:none;">
+        <label class="form-label">Expected Gross Receipts — Current Tax Year <span class="hint">(₹)</span></label>
+        <input type="number" id="spec-expected-curr" placeholder="e.g. 500000" min="0">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Opting for Presumptive Taxation (Sec 44ADA → Sec 58)?</label>
+        <div class="radio-group">
+          <div class="radio-opt">
+            <input type="radio" name="spec-presumptive" id="sp-yes" value="yes" onchange="onSpecPresumptiveChange()">
+            <label for="sp-yes">Yes (44ADA)</label>
+          </div>
+          <div class="radio-opt">
+            <input type="radio" name="spec-presumptive" id="sp-no" value="no" checked onchange="onSpecPresumptiveChange()">
+            <label for="sp-no">No</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" id="grp-spec-curr" style="display:none;">
+        <label class="form-label">Turnover / Gross Receipts — Current Tax Year <span class="hint">(₹, to check 44ADA eligibility — limit ₹75L)</span></label>
+        <input type="number" id="spec-receipts-curr" placeholder="e.g. 7000000" min="0">
+      </div>
+    </div>
+
+    <!-- NON-SPECIFIED / BUSINESS FIELDS -->
+    <div id="fields-nonspec" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Sub-type</label>
+        <div class="radio-group">
+          <div class="radio-opt">
+            <input type="radio" name="subtype" id="st-prof" value="profession" checked>
+            <label for="st-prof">Non-Specified Profession</label>
+          </div>
+          <div class="radio-opt">
+            <input type="radio" name="subtype" id="st-biz" value="business">
+            <label for="st-biz">Business</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Assessee Type <span class="hint">(thresholds differ)</span></label>
+        <div class="radio-group">
+          <div class="radio-opt">
+            <input type="radio" name="ns-assessee" id="nsa-ihuf" value="ihuf" checked>
+            <label for="nsa-ihuf">Individual / HUF</label>
+          </div>
+          <div class="radio-opt">
+            <input type="radio" name="ns-assessee" id="nsa-other" value="other">
+            <label for="nsa-other">Firm / Company / Other</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Income from Profession/Business — highest of 3 preceding Tax Years <span class="hint">(₹)</span></label>
+        <input type="number" id="ns-income-prev" placeholder="e.g. 300000" min="0">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Total Sales / Turnover / Gross Receipts — highest of 3 preceding Tax Years <span class="hint">(₹)</span></label>
+        <input type="number" id="ns-turnover-prev" placeholder="e.g. 2800000" min="0">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Opting for Presumptive Taxation (Sec 44AD → Sec 58)?</label>
+        <div class="radio-group">
+          <div class="radio-opt">
+            <input type="radio" name="ns-presumptive" id="np-yes" value="yes" onchange="onNsPresumptiveChange()">
+            <label for="np-yes">Yes (44AD)</label>
+          </div>
+          <div class="radio-opt">
+            <input type="radio" name="ns-presumptive" id="np-no" value="no" checked onchange="onNsPresumptiveChange()">
+            <label for="np-no">No</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" id="grp-ns-curr" style="display:none;">
+        <label class="form-label">Turnover / Gross Receipts — Current Tax Year <span class="hint">(₹, to check 44AD eligibility — limit ₹3 Crore)</span></label>
+        <input type="number" id="ns-receipts-curr" placeholder="e.g. 8500000" min="0">
+      </div>
+
+      <div class="form-group" id="grp-ns-lower" style="display:none;">
+        <label class="form-label">Declaring profit LOWER than deemed rate? <span class="hint">(8%/6% business · 50% profession)</span></label>
+        <div class="radio-group">
+          <div class="radio-opt">
+            <input type="radio" name="ns-lower" id="nl-yes" value="yes">
+            <label for="nl-yes">Yes (lower)</label>
+          </div>
+          <div class="radio-opt">
+            <input type="radio" name="ns-lower" id="nl-no" value="no" checked>
+            <label for="nl-no">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;">
+      <button class="btn-primary" style="flex:1;" onclick="runChecker()">Check Books Obligation</button>
+      <button class="btn-secondary" onclick="resetChecker()">Reset</button>
+    </div>
+  </div>
+
+  <!-- SAMPLE SCENARIOS -->
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title" style="margin-bottom:10px;">Try a Sample Scenario</div>
+    <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px;">Specified Profession</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;" id="scenario-grid-spec">
+      <button class="scenario-btn" onclick="loadScenario('ca', this)">CA in Practice</button>
+      <button class="scenario-btn" onclick="loadScenario('doctor', this)">Doctor / Clinic</button>
+      <button class="scenario-btn" onclick="loadScenario('it-consultant', this)">IT Consultant</button>
+      <button class="scenario-btn" onclick="loadScenario('architect', this)">Architect Firm</button>
+      <button class="scenario-btn" onclick="loadScenario('new-ca', this)">New CA (Setup)</button>
+    </div>
+    <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px;">Non-Specified Profession &amp; Business</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+      <button class="scenario-btn" onclick="loadScenario('kirana', this)">Kirana / Trader</button>
+      <button class="scenario-btn" onclick="loadScenario('startup', this)">New Startup</button>
+      <button class="scenario-btn" onclick="loadScenario('freelancer', this)">Freelancer</button>
+    </div>
+    <div id="scenario-desc" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(200,164,78,0.08);border-radius:8px;border-left:3px solid var(--gold);font-size:12.5px;color:var(--text-secondary);line-height:1.55;"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results-panel">
+
+    <div class="result-actions" id="result-actions">
+      <button class="btn-action" onclick="copyResult()"><span id="copy-label">Copy result</span></button>
+      <button class="btn-action" onclick="printResult()">Print / Save PDF</button>
+    </div>
+
+    <div id="res-category" class="result-box navy">
+      <div class="result-label">Result</div>
+      <div class="result-value" id="res-cat-val">—</div>
+      <div class="result-note" id="res-cat-note"></div>
+      <div class="result-note" id="res-books-note" style="margin-top:8px;font-weight:500;"></div>
+    </div>
+
+    <div id="res-retention" class="result-box navy">
+      <div class="result-label">Retention Period</div>
+      <div class="result-value" id="res-ret-val">—</div>
+      <div class="result-note" id="res-ret-note"></div>
+    </div>
+
+    <div id="res-chips" class="card" style="margin-top:4px;">
+      <div class="card-title">Applicable Provisions</div>
+      <div class="chip-row" id="chip-container"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================== TAB 2: PRESCRIBED BOOKS ============================== -->
+<div id="tab-books" class="tab-content active">
+  <h2 class="section-heading">Prescribed Books of Account</h2>
+  <p class="section-sub">Rule 6F → Rule 46 · Sec 44AA → Sec 62</p>
+
+  <div class="chip-row" style="margin-bottom:16px;">
+    <span class="chip">Sec 44AA (1961) <span class="chip-arrow">→</span> Sec 62</span>
+    <span class="chip">Rule 6F → Rule 46</span>
+  </div>
+
+  <div class="result-box amber" style="margin-bottom:16px;">
+    <div class="result-label">Electronic books? Daily backup also applies</div>
+    <div class="result-note">Where the prescribed books below are maintained electronically, <strong>Rule 46(8)</strong> additionally requires a <strong>daily backup on servers physically in India</strong> (effective <strong>1 April 2026</strong>). See the <strong>Electronic Backup</strong> tab for applicability thresholds, penalty exposure (₹25,000 + Best-Judgment Assessment risk) and the day-end cut-off interpretation.</div>
+  </div>
+
+  <!-- SECTION 1: SPECIFIED PROFESSION -->
+  <div style="margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">1. Specified Profession</div>
+  <div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;">Sec 62(1)(a) & 62(4) · Rule 46</div>
+
+  <div class="card card-accent">
+    <div class="card-title">Category A — Receipts ≤ ₹1,50,000 (or Newly Set Up with receipts not likely to exceed)</div>
+    <div class="card-body">A specified professional whose gross receipts stayed at or below ₹1,50,000 in each of the three preceding Tax Years. For a freshly started practice, Category A applies when receipts for the current year are not expected to cross ₹1,50,000. No specific books are mandated by the Board for this group.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Category B — Receipts &gt; ₹1,50,000 in Any One or More of 3 Preceding Tax Years</div>
+    <div class="card-body" style="margin-bottom:10px;">A specified professional whose gross receipts topped ₹1,50,000 in any one or more of the three preceding Tax Years — or, for a new practice, is expected to do so this year. This group must keep the books listed under Rule 46(4):</div>
+    <ul class="books-list">
+      <li><div class="icon">a</div><div>Cash book — updated daily, reflecting the running cash balance at the close of each day (or at least at the end of each month)</div></li>
+      <li><div class="icon">b</div><div>Journal — required only where the books follow the mercantile (accrual) system</div></li>
+      <li><div class="icon">c</div><div>Ledger</div></li>
+      <li><div class="icon">d</div><div>Duplicate copies of any bill or receipt the person issues for ₹250 or more</div></li>
+      <li><div class="icon">e</div><div>Original supporting bills and receipts for any expense of ₹250 or more</div></li>
+      <li><div class="icon">f</div><div>Self-signed payment vouchers for expenses under ₹250 where the cash book lacks adequate detail for them</div></li>
+    </ul>
+    <div class="divider"></div>
+    <div style="font-size:13px;color:var(--text-secondary);">Medical practitioners (any system of medicine — doctors, surgeons, dentists, pathologists, radiologists, vaids, hakims, and the like) must also keep:</div>
+    <ul class="books-list" style="margin-top:8px;">
+      <li><div class="icon">i</div><div>A patient-wise daily register in Form 25 (formerly Form 3C) recording the date, patient, service provided, fee charged and when it was received</div></li>
+      <li><div class="icon">ii</div><div>A broad-head stock summary of drugs, medicines and consumables held — taken at both the opening and closing of the Tax Year</div></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 2: NON-SPECIFIED PROFESSION & BUSINESS -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">2. Non-Specified Profession &amp; Business</div>
+  <div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;">Sec 62(1)(b) & 62(2)</div>
+
+  <div class="card card-accent">
+    <div class="card-title">Category C — Below Threshold</div>
+    <div class="card-body">A non-specified profession or business that stayed within the income and turnover limits (below) across all three preceding years — and, if newly started, is not expected to breach them. No books are obligatory for this group.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Category D — Threshold Crossed or Presumptive (Lower Profit)</div>
+    <div class="card-body" style="margin-bottom:10px;">A non-specified profession or business that had income or turnover above the limits specified below in any one or more of the 3 preceding years — and, if newly started, is expected to breach them. Books must be kept, but the Board hasn't fixed a specific format — whatever records are needed to work out taxable income, with the Assessing Officer free to specify particulars. Two situations land here:</div>
+    <ul class="books-list" style="margin-bottom:10px;">
+      <li><div class="icon">1</div><div>A non-specified profession or business that crossed the income or turnover limits (below).</div></li>
+      <li><div class="icon">2</div><div>A presumptive-scheme assessee under Sec 58(2)/61(2) [earlier Sec 44AD, 44ADA, 44AE, 44BB, 44BBB] who reports profit below the deemed rate.</div></li>
+    </ul>
+    <div class="result-box amber" style="margin-top:8px;">
+      <div class="result-label">Threshold — Individual / HUF</div>
+      <div style="font-size:13px;color:var(--amber);font-weight:600;">Income &gt; ₹2,50,000  OR  Total Sales/Turnover &gt; ₹25,00,000</div>
+    </div>
+    <div class="result-box navy" style="margin-top:8px;">
+      <div class="result-label">Threshold — Other Persons (Firm, Company etc.)</div>
+      <div style="font-size:13px;color:var(--navy);font-weight:600;">Income &gt; ₹1,20,000  OR  Total Sales/Turnover &gt; ₹10,00,000</div>
+    </div>
+  </div>
+
+  <!-- RETENTION -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Retention &amp; Location</div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-text"><strong>How long (Rule 46(9)):</strong> retain the books and records for <strong>7 tax years</strong> measured from the close of the relevant Tax Year.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-text"><strong>Reassessment (Rule 46(10)):</strong> if a year is reopened under Sec 279 (or Sec 147 of the 1961 Act as it stood before repeal), whatever records existed when it was reopened stay preserved until that reassessment is completed.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-text"><strong>Where:</strong> Keep them at the main place of practice. Running multiple locations? Either hold everything centrally, or keep each location's separate set on-site there.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY POINTS -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Other Key Points</div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="flow-step">
+        <div class="flow-num">→</div>
+        <div class="flow-text"><strong>After a business closes (Sec 320(4)):</strong> money collected once a business or profession has shut down is taxed in the hands of whoever receives it, in the year it comes in.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">→</div>
+        <div class="flow-text"><strong>Electronic records (Rule 46(8)):</strong> books kept in electronic form must stay accessible within India at all times, and a daily back-up has to be held on servers physically located in India.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">→</div>
+        <div class="flow-text"><strong>First year of practice:</strong> for a newly started activity, the category is decided on what the year's receipts, income or turnover are <strong>expected to reach</strong>, rather than past figures.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== TAB 3: PROFESSIONS ============================== -->
+<div id="tab-professions" class="tab-content">
+  <h2 class="section-heading">Profession Classification</h2>
+  <p class="section-sub">Under Sec 44AA → Sec 62, read with Rule 6F → Rule 46</p>
+
+  <div class="chip-row" style="margin-bottom:14px;">
+    <span class="chip">Sec 44AA (1961) <span class="chip-arrow">→</span> Sec 62</span>
+    <span class="chip">Rule 6F → Rule 46</span>
+  </div>
+
+  <div class="card card-accent" style="margin-bottom:14px;">
+    <div class="card-title">Specified Professions — Sec 62(4)</div>
+    <div class="card-body" style="margin-bottom:12px;">
+      These are the professions specifically named under Sec 62(4):
+      <ul style="margin:8px 0;padding-left:18px;line-height:1.8;">
+        <li>The 9 listed below (legal, medical, engineering, etc.)</li>
+        <li>Plus 2 more notified by the Board — <strong>film artist</strong> and <strong>authorised representative</strong></li>
+      </ul>
+      When must they keep books?
+      <ul style="margin:8px 0 0;padding-left:18px;line-height:1.8;">
+        <li><strong>Receipts above ₹1,50,000</strong> in any one or more of 3 preceding years → prescribed books (Category B)</li>
+        <li><strong>Receipts ₹1,50,000 or below</strong> in all 3 years → no books prescribed (Category A)</li>
+        <li><strong>New practice</strong> → judged on whether this year's receipts are likely to cross ₹1,50,000</li>
+      </ul>
+    </div>
+    <div class="prof-grid-v2">
+      <div class="prof-tile"><div class="prof-icon">⚖</div><div class="prof-label"><span class="prof-num">01</span>Legal</div><div class="prof-sub">Advocate, Solicitor, Vakil</div></div>
+      <div class="prof-tile"><div class="prof-icon">🩺</div><div class="prof-label"><span class="prof-num">02</span>Medical</div><div class="prof-sub">Physician, Surgeon, Dentist, Pathologist, Radiologist, etc.</div></div>
+      <div class="prof-tile"><div class="prof-icon">⚙</div><div class="prof-label"><span class="prof-num">03</span>Engineering</div><div class="prof-sub">All branches</div></div>
+      <div class="prof-tile"><div class="prof-icon">🏛</div><div class="prof-label"><span class="prof-num">04</span>Architectural</div><div class="prof-sub">All branches</div></div>
+      <div class="prof-tile"><div class="prof-icon">📋</div><div class="prof-label"><span class="prof-num">05</span>Accountancy</div><div class="prof-sub">CA, CPA, Cost Accountant</div></div>
+      <div class="prof-tile"><div class="prof-icon">💡</div><div class="prof-label"><span class="prof-num">06</span>Technical Consultancy</div><div class="prof-sub">All fields</div></div>
+      <div class="prof-tile"><div class="prof-icon">🎨</div><div class="prof-label"><span class="prof-num">07</span>Interior Decoration</div><div class="prof-sub">All branches</div></div>
+      <div class="prof-tile prof-tile-expand" onclick="toggleProfDetail('film-detail', this)"><div class="prof-icon">🎬</div><div class="prof-label"><span class="prof-num">08</span>Film Artist <span class="prof-tap">tap for details ▾</span></div><div class="prof-sub">Director, Actor, Cameraman, Singer, Lyricist, etc.</div></div>
+      <div class="prof-tile"><div class="prof-icon">📑</div><div class="prof-label"><span class="prof-num">09</span>Company Secretary</div><div class="prof-sub">Practising CS</div></div>
+      <div class="prof-tile"><div class="prof-icon">💻</div><div class="prof-label"><span class="prof-num">10</span>Information Technology</div><div class="prof-sub">All IT services</div></div>
+      <div class="prof-tile prof-tile-expand" onclick="toggleProfDetail('auth-detail', this)"><div class="prof-icon">🗣</div><div class="prof-label"><span class="prof-num">11</span>Authorised Representative <span class="prof-tap">tap for details ▾</span></div><div class="prof-sub">Tribunal / authority representation</div></div>
+    </div>
+
+    <!-- EXPANDABLE DETAILS -->
+    <div class="prof-detail" id="film-detail" style="display:none;">
+      <div class="prof-detail-title">Film Artist — Definition</div>
+      <div class="prof-detail-body">A film artist is anyone who works professionally on making a cinematograph film (whether they produce it themselves or work for someone else). It covers:
+      <ul style="margin:8px 0 0;padding-left:18px;line-height:1.9;">
+        <li>Actor</li>
+        <li>Cameraman</li>
+        <li>Director (including assistant director)</li>
+        <li>Music director (including assistant music director)</li>
+        <li>Art director (including assistant art director)</li>
+        <li>Dance director (including assistant dance director)</li>
+        <li>Editor</li>
+        <li>Singer</li>
+        <li>Lyricist</li>
+        <li>Story writer</li>
+        <li>Screenplay writer</li>
+        <li>Dialogue writer</li>
+        <li>Dress designer</li>
+      </ul>
+    </div>
+    </div>
+    <div class="prof-detail" id="auth-detail" style="display:none;">
+      <div class="prof-detail-title">Authorised Representative — Definition</div>
+      <div class="prof-detail-body">An authorised representative is someone who, for a fee or remuneration, represents another person before:
+      <ul style="margin:8px 0;padding-left:18px;line-height:1.9;">
+        <li>Any Tribunal; or</li>
+        <li>Any authority set up under any law in force</li>
+      </ul>
+      It does <strong>not</strong> include:
+      <ul style="margin:8px 0 0;padding-left:18px;line-height:1.9;">
+        <li>An employee of the person being represented</li>
+        <li>Someone in the legal profession</li>
+        <li>Someone in the accountancy profession</li>
+      </ul>
+    </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Non-Specified Profession &amp; Business — Sec 62(1)(b)</div>
+    <div class="card-body">
+      This covers any business, and any profession that is not in the specified list above. Whether books are needed depends on income/turnover:
+      <ul style="margin:8px 0;padding-left:18px;line-height:1.8;">
+        <li><strong>Below the thresholds</strong> → no books required (Category C)</li>
+        <li><strong>Thresholds crossed</strong> → books required, but no specific format is prescribed — keep whatever records let you compute income; the AO may ask for particulars (Category D)</li>
+        <li><strong>Presumptive with lower profit</strong> → if declaring profit below the deemed rate under Sec 58(2)/61(2), books become mandatory (Category D)</li>
+      </ul>
+      <span style="font-size:12px;color:var(--text-secondary);">Thresholds: Individual/HUF — income above ₹2,50,000 or turnover above ₹25 lakh. Others — income above ₹1,20,000 or turnover above ₹10 lakh. (See Prescribed Books tab.)</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Business vs. Profession — Quick Distinction</div>
+    <div class="card-body">
+      <div class="flow-step">
+        <div class="flow-num">→</div>
+        <div class="flow-text"><strong>Profession</strong> — earning comes mainly from personal skill, knowledge or expertise (e.g. a consultant, designer, trainer).</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">→</div>
+        <div class="flow-text"><strong>Business</strong> — any other commercial activity like trading, manufacturing or services, where personal skill is not the main factor.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== TAB 4: SECTION MAPPING ============================== -->
+<!-- ============================== TAB: FORM 26 REPORTING ============================== -->
+<div id="tab-form26" class="tab-content">
+  <h2 class="section-heading">Form 26 - Books of Account Reporting in Tax Audit Report</h2>
+  <p class="section-sub">Particulars on books of account required in the tax audit report (Form 26, Part B)</p>
+
+  <div class="result-box navy" style="margin-bottom:16px;">
+    <div class="result-label">Context</div>
+    <div class="result-note">Where a tax audit applies under Sec 63, the auditor reports on the assessee's books of account in Part B of Form 26. These are the specific particulars to be furnished.</div>
+  </div>
+
+  <!-- PART B -->
+  <div style="margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Part B — Books of Account &amp; Method of Accounting</div>
+
+  <div class="card card-accent">
+    <div class="card-title">Clause 13 — Books Maintained</div>
+    <div class="card-body">List of books of account maintained, including any maintained in a computer system.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Clause 14 — Location &amp; Software</div>
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">a</div><div>Address(es) where books are maintained — if at multiple locations, list each address with the books held there</div></li>
+        <li><div class="icon">b</div><div>Accounting software used for maintaining books in the computer system</div></li>
+        <li><div class="icon">c</div><div>Any cloud or other storage software used, with its location — IP address and country</div></li>
+        <li><div class="icon">d</div><div>Whether Rule 46(8) has been complied with (electronic books accessible in India + daily India-based back-up) — Yes / No</div></li>
+        <li><div class="icon">e</div><div>If yes, the address of the back-up server location in India</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Clause 15 — Method of Accounting</div>
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">a</div><div>Method employed in the tax year — Mercantile system or Cash system</div></li>
+        <li><div class="icon">b</div><div>Whether the method changed versus the immediately preceding tax year — Yes / No (if yes, see the Accounting Information schedule below)</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CHANGE IN METHOD SCHEDULE -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Schedule — Change in Method of Accounting [Clause 15(b)]</div>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Sl. No.</th>
+          <th>Particulars</th>
+          <th>Increase in Profit / Decrease in Loss</th>
+          <th>Decrease in Profit / Increase in Loss</th>
+          <th>Net Effect</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>(A)</td><td>(B)</td><td>(C)</td><td>(D)</td><td>(E)</td><td>(F)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="result-box amber" style="margin-top:16px;">
+    <div class="result-label">Note</div>
+    <div class="result-note">Tax audit applicability is governed by a separate section (Sec 63). This tab covers only the books-of-account particulars reported within Form 26.</div>
+  </div>
+</div>
+
+<!-- ============================== TAB: COMPANIES ACT ============================== -->
+<div id="tab-coact" class="tab-content">
+  <h2 class="section-heading">Companies Act, 2013 — Section 128</h2>
+  <p class="section-sub">Books of account, etc., to be kept by company</p>
+
+  <div class="result-box navy" style="margin-bottom:16px;">
+    <div class="result-label">Why this matters</div>
+    <div class="result-note">A company maintaining books for income-tax must independently satisfy Sec 128 of the Companies Act. The two regimes run in parallel — note the longer 8-year retention here versus 7 years under Rule 46(9).</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">128(1) — What &amp; Where</div>
+    <div class="card-body">Every company must prepare and keep, at its registered office, books of account, other relevant books and papers, and financial statements for each financial year, giving a true and fair view of its affairs (including any branch). Books must be kept on the <strong>accrual basis</strong> and under the <strong>double-entry system</strong>.
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">i</div><div>Books may be kept at another place in India if the Board so decides — the company must then file a written notice of that address in <strong>Form AOC-5</strong> with the Registrar within <strong>7 days</strong></div></li>
+        <li><div class="icon">ii</div><div>Books may also be kept in <strong>electronic mode</strong> in the prescribed manner</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">128(2) — Branch Offices</div>
+    <div class="card-body">A company with a branch (in India or abroad) is treated as compliant if proper books for the branch's transactions are kept at that branch and periodic summarised returns are sent to the registered office (or the other notified place).</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">128(3) — Inspection</div>
+    <div class="card-body">Books kept in India are open for inspection at the registered office (or other notified place) by any director during business hours. Financial information held outside India must be made available in copy for inspection, subject to prescribed conditions.
+      <div style="margin-top:8px;font-size:12.5px;color:var(--text-secondary);">Inspection of a subsidiary's books may be done only by a person authorised by a Board resolution.</div>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">128(4) — Assistance During Inspection</div>
+    <div class="card-body">Officers and employees must give the person carrying out the inspection all assistance that the company may reasonably be expected to provide.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">128(5) — Retention Period</div>
+    <div class="card-body">Books of account, together with relevant vouchers, must be kept in good order for at least <strong>8 financial years</strong> immediately preceding the current financial year (or for all preceding years, if the company is younger than 8 years).
+      <div style="margin-top:8px;font-size:12.5px;color:var(--text-secondary);">If an investigation is ordered under Chapter XIV, the Central Government may direct a longer retention period.</div>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">128(6) — Penalty for Contravention</div>
+    <div class="card-body">If the Managing Director, the Whole-time Director in charge of finance, the CFO, or any other person charged by the Board with compliance contravenes this section, that person is liable to a <strong>fine of not less than ₹50,000, extending up to ₹5,00,000</strong>.
+      <div style="margin-top:8px;font-size:12.5px;color:var(--text-secondary);">The earlier provision for imprisonment up to one year has been omitted.</div>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Electronic Records — Annual Intimation to Registrar (Rule 3(6))</div>
+    <div class="card-body">Where books are maintained in electronic mode, the company must intimate the Registrar each year, at the time of filing the financial statements:
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">a</div><div>Name of the service provider</div></li>
+        <li><div class="icon">b</div><div>Internet Protocol (IP) address of the service provider</div></li>
+        <li><div class="icon">c</div><div>Location of the service provider (wherever applicable)</div></li>
+        <li><div class="icon">d</div><div>Where books are maintained on the cloud — the address provided by the service provider</div></li>
+        <li><div class="icon">e</div><div>Where the service provider is located outside India — the name and address of the person in control of the books in India</div></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== TAB: GST ============================== -->
+<div id="tab-gst" class="tab-content">
+  <h2 class="section-heading">GST — Accounts &amp; Records</h2>
+  <p class="section-sub">Books of account required under Section 35 of the CGST Act &amp; Rule 56 of the CGST Rules</p>
+
+  <div class="result-box navy" style="margin-bottom:16px;">
+    <div class="result-label">Statutory Basis</div>
+    <div class="result-note">Section 35 of the CGST Act sets out the core accounts every registered person must keep; Rule 56 of the CGST Rules prescribes the detailed records, special-category accounts and integrity rules. Books may be physical or electronic, kept at the declared place(s) of business.</div>
+  </div>
+
+  <!-- SECTION 35 CORE -->
+  <div style="margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Section 35 — Core Accounts</div>
+
+  <div class="card card-accent">
+    <div class="card-title">What every registered person keeps</div>
+    <div class="card-body">At the principal place of business, a true and correct account of:
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">a</div><div>Production or manufacture of goods</div></li>
+        <li><div class="icon">b</div><div>Inward and outward supply of goods or services (or both)</div></li>
+        <li><div class="icon">c</div><div>Stock of goods</div></li>
+        <li><div class="icon">d</div><div>Input tax credit availed</div></li>
+        <li><div class="icon">e</div><div>Output tax payable and paid</div></li>
+        <li><div class="icon">f</div><div>Such other particulars as may be prescribed</div></li>
+      </ul>
+      <div style="margin-top:8px;font-size:12.5px;color:var(--text-secondary);">Where more than one place of business is on the registration certificate, the accounts for each place are kept at that place. Records may be maintained electronically. Warehouse/godown operators and transporters must keep records of consignor, consignee and goods — whether registered or not.</div>
+    </div>
+  </div>
+
+  <!-- RULE 56 RECORDS -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Rule 56 — Detailed Records</div>
+
+  <div class="card card-accent">
+    <div class="card-title">Registers &amp; documents (all registered persons)</div>
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">1</div><div>Imports, exports and reverse-charge supplies, with invoices, bills of supply, delivery challans, credit/debit notes and receipt/payment/refund vouchers</div></li>
+        <li><div class="icon">2</div><div><strong>Stock account</strong> — opening balance, receipts, supplies, goods lost/stolen/destroyed/written off/gifted/free-sampled, and closing balance (raw materials, finished goods, scrap, wastage). <em>Not required for composition taxpayers under Sec 10.</em></div></li>
+        <li><div class="icon">3</div><div>Separate account of <strong>advances</strong> received, paid and adjusted</div></li>
+        <li><div class="icon">4</div><div><strong>Tax account</strong> — tax payable (incl. reverse charge), collected and paid, input tax, ITC claimed, plus a register of invoices, credit/debit notes and delivery challans. <em>Not required for composition taxpayers.</em></div></li>
+        <li><div class="icon">5</div><div>Names and addresses of suppliers and recipients, and addresses of premises where goods are stored (including in transit)</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Special-category accounts</div>
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">→</div><div><strong>Agents</strong> — authorisation from each principal, goods/services received and supplied per principal, accounts furnished and tax paid</div></li>
+        <li><div class="icon">→</div><div><strong>Manufacturers</strong> — monthly production accounts with quantitative details of raw materials/services used and goods manufactured (incl. waste and by-products)</div></li>
+        <li><div class="icon">→</div><div><strong>Service providers</strong> — quantitative details of goods used, input services utilised and services supplied</div></li>
+        <li><div class="icon">→</div><div><strong>Works contractors</strong> — separate accounts per contract: parties, goods/services received and used, payments received, and suppliers</div></li>
+        <li><div class="icon">→</div><div><strong>Carriers / C&amp;F agents</strong> — true records of goods handled on behalf of any registered person</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- INTEGRITY -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Integrity &amp; Location Rules</div>
+
+  <div class="card card-accent">
+    <div class="card-title">How records must be kept</div>
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">→</div><div><strong>No erasing or overwriting:</strong> incorrect entries (other than clerical) are scored out under attestation and the correct entry recorded. For electronic records, a log of every edit/deletion must be kept.</div></li>
+        <li><div class="icon">→</div><div><strong>Manual books:</strong> each volume serially numbered.</div></li>
+        <li><div class="icon">→</div><div><strong>Electronic records:</strong> permitted, authenticated by digital signature.</div></li>
+        <li><div class="icon">→</div><div><strong>Location:</strong> at the principal place of business and at each additional place on the registration certificate; digital records must be accessible at every related place.</div></li>
+        <li><div class="icon">→</div><div>Goods found stored at an undeclared place without valid documents — the proper officer may tax them as if supplied by the registered person.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- RETENTION -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Retention Period (Sec 36)</div>
+
+  <div class="result-box amber" style="margin-bottom:10px;">
+    <div class="result-label">Standard Period</div>
+    <div style="font-size:13px;color:var(--amber);font-weight:600;">72 months (6 years) from the due date of furnishing the annual return for that financial year</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Disputes / Litigation</div>
+    <div class="card-body">Where the registered person is party to an appeal, revision or investigation, records must be kept for <strong>one year after final disposal</strong> of the proceeding, or until the standard 72-month period ends — whichever is later.</div>
+  </div>
+
+  <div class="result-box red" style="margin-top:14px;">
+    <div class="result-label">Penalty for Non-Compliance</div>
+    <div class="result-note">Failure to maintain proper accounts can attract a general penalty of up to <strong>₹25,000</strong> under the CGST/SGST Act. Separately, where goods or services are not accounted for, the proper officer may determine and recover the tax as if those goods/services had been supplied (Sec 35(6)).</div>
+  </div>
+</div>
+
+<!-- ============================== TAB: LAWS COMPARISON ============================== -->
+<div id="tab-compare" class="tab-content">
+  <h2 class="section-heading">Laws Comparison</h2>
+  <p class="section-sub">Books-of-account requirements compared across Income-tax, Companies Act and GST</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Aspect</th>
+          <th>Income-tax (Sec 62 / Rule 46)</th>
+          <th>Companies Act (Sec 128)</th>
+          <th>GST (Sec 35 / Rule 56)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Who it applies to</strong></td>
+          <td>Specified professions, and businesses/other professions crossing thresholds</td>
+          <td>Every company</td>
+          <td>Every registered person under GST</td>
+        </tr>
+        <tr>
+          <td><strong>Retention period</strong></td>
+          <td>7 tax years from end of the relevant Tax Year</td>
+          <td>8 financial years immediately preceding (or all years if younger)</td>
+          <td>72 months (6 years) from the annual return due date</td>
+        </tr>
+        <tr>
+          <td><strong>Basis of accounting</strong></td>
+          <td>Cash or mercantile (assessee's choice)</td>
+          <td>Accrual basis + double-entry system (mandatory)</td>
+          <td>Transaction-wise records of supplies, stock, ITC and tax</td>
+        </tr>
+        <tr>
+          <td><strong>Key records</strong></td>
+          <td>Cash book, journal, ledger, bills, vouchers (Rule 46(4))</td>
+          <td>Books of account + financial statements (true &amp; fair view)</td>
+          <td>Sales, purchase, stock, ITC and tax-payment registers + invoices</td>
+        </tr>
+        <tr>
+          <td><strong>Electronic mode — accessibility</strong></td>
+          <td>Must stay accessible in India at all times (Rule 46(8))</td>
+          <td>Accessible in India at all times, usable for later reference (Rule 3(1))</td>
+          <td>Must be backed up and authenticated where required (digital signature)</td>
+        </tr>
+        <tr>
+          <td><strong>Daily back-up</strong></td>
+          <td>Daily back-up on servers physically located in India (Rule 46(8))</td>
+          <td>Daily back-up on servers physically in India — including where books are kept outside India (Rule 3(5))</td>
+          <td>No specific daily-backup rule; back-up required for e-records</td>
+        </tr>
+        <tr>
+          <td><strong>Audit trail software</strong></td>
+          <td>Not specifically mandated</td>
+          <td>From FY 2023-24, software must record an audit trail of every transaction and edit, with the trail incapable of being disabled (Rule 3(1) proviso)</td>
+          <td>Not specifically mandated; edit/deletion log required for e-records (Rule 56(8))</td>
+        </tr>
+        <tr>
+          <td><strong>Format &amp; integrity</strong></td>
+          <td>Books to enable computation of total income</td>
+          <td>Retain in original/accurate format, complete and unaltered; branch data unaltered; displayable in legible form (Rule 3(2)–(4))</td>
+          <td>No erasing/overwriting; incorrect entries scored out under attestation; manual volumes serially numbered (Rule 56(8)–(9))</td>
+        </tr>
+        <tr>
+          <td><strong>Registrar intimation (e-records)</strong></td>
+          <td>Not applicable</td>
+          <td>Annually with financial statements — service provider name, IP address, location, cloud address, and India-contact if provider is overseas (Rule 3(6))</td>
+          <td>Not applicable</td>
+        </tr>
+        <tr>
+          <td><strong>Location of books</strong></td>
+          <td>Principal place of business or profession</td>
+          <td>Registered office; may shift to another place in India by Board decision + notice in Form AOC-5 within 7 days to Registrar</td>
+          <td>Principal place of business; branch records at each branch/godown</td>
+        </tr>
+        <tr>
+          <td><strong>Branches</strong></td>
+          <td>Books at each branch, or all at the principal place</td>
+          <td>Branch books at branch + periodic summarised returns to registered office</td>
+          <td>Records specific to each location kept at those premises</td>
+        </tr>
+        <tr>
+          <td><strong>Inspection</strong></td>
+          <td>By the Assessing Officer / tax authorities</td>
+          <td>By any director during business hours (subsidiary: only via Board resolution)</td>
+          <td>By the proper officer / GST authorities</td>
+        </tr>
+        <tr>
+          <td><strong>Consequence of default</strong></td>
+          <td>Penalty <strong>₹25,000</strong> (Sec 271A → Sec 441); <strong>₹10,000</strong> for incorrect auditor certification; collateral risk: rejection of e-records → <strong>Best-Judgment Assessment</strong> by AO</td>
+          <td>Fine ₹50,000 to ₹5,00,000 on the responsible officer (Sec 128(6))</td>
+          <td>General penalty up to ₹25,000 under the CGST/SGST Act; unaccounted goods/services may be taxed as supplied (Sec 35(6))</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="result-box amber" style="margin-top:14px;">
+    <div class="result-label">Practical Takeaway</div>
+    <div class="result-note">Where more than one regime applies, follow the strictest on each axis: retain for the longest period (8 financial years under the Companies Act), keep accrual + double-entry books, use audit-trail-enabled software, maintain GST registers transaction-wise, and ensure electronic records meet the India-access and daily back-up conditions under Rule 46(8) / Rule 3.</div>
+  </div>
+</div>
+
+<!-- ============================== TAB: COMPANY COMPLIANCE ============================== -->
+<div id="tab-company" class="tab-content">
+  <h2 class="section-heading">Company Compliance — Books &amp; Backup</h2>
+  <p class="section-sub">A single, unified checklist for a company subject to Income-tax, Companies Act and GST — strictest period applied throughout</p>
+
+  <div class="result-box navy" style="margin-bottom:14px;">
+    <div class="result-label">How to read this</div>
+    <div class="result-note">One unified set of obligations for an operating company. Where the underlying laws differ on a period or deadline, the <strong>strictest</strong> requirement is applied throughout — so following this keeps the company compliant on every front without tracking each law separately.</div>
+  </div>
+
+  <button class="btn-action" style="margin-bottom:16px;max-width:300px;" onclick="downloadCompanyPDF()"><span id="cpdf-label">Open full PDF (printable)</span></button>
+
+  <!-- 1. BOOKS -->
+  <div style="margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">1. Books &amp; Records to Maintain</div>
+  <div class="card card-accent">
+    <div class="card-body">Maintain one set of accounts on the <strong>accrual basis</strong> using the <strong>double-entry system</strong>, giving a true and fair view. Keep:
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">→</div><div>Cash book, bank book, journal and ledger</div></li>
+        <li><div class="icon">→</div><div>Sales/outward and purchase/inward supply registers (with invoice and tax details)</div></li>
+        <li><div class="icon">→</div><div>Stock register — incl. scrap, wastage, and goods lost/stolen/destroyed/written off/gifted/free-sampled</div></li>
+        <li><div class="icon">→</div><div>ITC register; output tax register; account of advances</div></li>
+        <li><div class="icon">→</div><div>Fixed asset register and depreciation schedule</div></li>
+        <li><div class="icon">→</div><div>Tax invoices, bills of supply, credit/debit notes, delivery challans, vouchers; supplier/recipient/storage details</div></li>
+        <li><div class="icon">→</div><div>Financial statements (P&amp;L, Balance Sheet, Cash Flow — Schedule III)</div></li>
+        <li><div class="icon">→</div><div>Manufacturers: monthly production accounts · Service providers: input-service details</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 2. HOW KEPT -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">2. How Records Must Be Kept</div>
+  <div class="card card-accent">
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">→</div><div>Physical or electronic. <strong>No erasing/overwriting</strong> — score out incorrect entries (other than clerical) under attestation; keep an edit/deletion log for electronic records.</div></li>
+        <li><div class="icon">→</div><div>Manual volumes <strong>serially numbered</strong>; electronic records in original/legible format, complete and unaltered.</div></li>
+        <li><div class="icon">→</div><div>Accounting software must carry a <strong>non-disableable audit trail</strong> (mandatory FY 2023-24 onwards).</div></li>
+        <li><div class="icon">→</div><div>Electronic records <strong>authenticated</strong> (e.g. digital signature) and <strong>accessible in India at all times</strong>.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 3. BACKUP -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">3. Electronic Backup — Mandatory Daily</div>
+  <div class="result-box red" style="margin-bottom:10px;">
+    <div class="result-label">New &amp; immediate</div>
+    <div class="result-note">The daily-backup-in-India requirement is new for income-tax, effective <strong>1 April 2026</strong> (records from TY 2026-27). Begin immediately — failure is reported by the tax auditor and may attract penalties.</div>
+  </div>
+  <div class="card card-accent">
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">→</div><div><strong>Daily back-up</strong> stored on servers <strong>physically located in India</strong> — including a copy of any data held overseas. Anchored in <strong>Rule 46(8), IT Rules 2026</strong> and mirrored by the MCA's <strong>Companies (Accounts) Rule 3(5)</strong>.</div></li>
+        <li><div class="icon">→</div><div>Document an explicit <strong>day-end cut-off time</strong> (e.g. 23:59 IST) in policy and produce the daily run logs with a <strong>SHA-256 hash</strong> per file to evidence integrity.</div></li>
+        <li><div class="icon">→</div><div>Tiered retention: daily incremental + weekly full (1–4 weeks) · monthly full (6–12 months) · one year-end full (8 years). Daily India-resident snapshots kept for <strong>7 tax years</strong> per <strong>Rule 46(9)</strong>.</div></li>
+        <li><div class="icon">→</div><div><strong>3-2-1 rule</strong> (3 copies, 2 media, 1 offsite); <strong>immutable/WORM</strong> long-term archive; <strong>quarterly restore tests</strong>.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4. RETENTION -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">4. Retention Period</div>
+  <div class="result-box amber" style="margin-bottom:10px;">
+    <div class="result-label">Strictest standard</div>
+    <div style="font-size:13px;color:var(--amber);font-weight:600;">Retain all books, records, vouchers and backups for at least 8 financial years from the end of the financial year</div>
+  </div>
+  <div class="card card-accent">
+    <div class="card-body">Keep them <strong>longer where any proceeding is pending</strong> — assessment, reassessment, appeal, revision or investigation — until that matter is finally concluded, even if 8 years have lapsed.</div>
+  </div>
+
+  <!-- 5. LOCATION -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">5. Where to Keep the Books</div>
+  <div class="card card-accent">
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">→</div><div>Primary books at the <strong>registered office</strong> (usually also the principal place of business).</div></li>
+        <li><div class="icon">→</div><div>To keep them elsewhere in India — Board resolution + <strong>Form AOC-5</strong> to the Registrar within <strong>7 days</strong>.</div></li>
+        <li><div class="icon">→</div><div>Multi-location: keep location-specific records at each site; electronic records accessible from every related place.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 6. CONSEQUENCES -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">6. Consequences of Default</div>
+  <div class="card card-accent">
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">→</div><div><strong>Income Tax:</strong> failure to maintain books — ₹25,000 penalty on the company. Incorrect information in an audit report/certificate — ₹10,000 on the accountant (CA) for <em>each</em> such report/certificate (Sec 271J), no intent required, relief only on proof of reasonable cause. Backup details not reported, or reported incorrectly, fall in this category.</div></li>
+        <li><div class="icon">→</div><div><strong>GST:</strong> general penalty up to ₹25,000 (CGST/SGST); unaccounted goods/services may be taxed as if supplied.</div></li>
+        <li><div class="icon">→</div><div><strong>Company-law default:</strong> fine ₹50,000 to ₹5,00,000 on the responsible officer (MD / WTD-finance / CFO / charged person).</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 8. AUDITOR CHECKLIST -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">7. Auditor / Tax Auditor Verification Checklist</div>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Verification point</th><th>Law</th><th>Reference</th></tr></thead>
+      <tbody>
+        <tr><td>Accrual basis, double-entry; true and fair view</td><td>Companies Act</td><td>Sec 128(1)</td></tr>
+        <tr><td>Complete record set — cash/bank, journal, ledger, sales &amp; purchase, stock, fixed asset registers</td><td>All three</td><td>—</td></tr>
+        <tr><td>GST registers — supplies, ITC (availed/reversed/utilised), output tax, advances</td><td>GST</td><td>Sec 35 / R.56</td></tr>
+        <tr><td>Supporting documents — invoices, bills of supply, credit/debit notes, challans, vouchers</td><td>All three</td><td>—</td></tr>
+        <tr><td>Stock register captures scrap, wastage, lost/stolen/destroyed/written-off/gifted goods</td><td>GST</td><td>R.56(2)</td></tr>
+        <tr><td>Production accounts (manufacturers) / input-service details (services)</td><td>GST</td><td>R.56(12)-(13)</td></tr>
+        <tr><td>No erasing/overwriting; attested corrections; serial numbering</td><td>GST</td><td>R.56(8)-(9)</td></tr>
+        <tr><td>Non-disableable audit trail, operative through the year (FY 2023-24+)</td><td>Companies Act</td><td>R.3(1) proviso</td></tr>
+        <tr><td>E-records accessible in India, original/legible format, edit/deletion log</td><td>Income-tax + Co. Act</td><td>R.46(8) / R.3</td></tr>
+        <tr><td>Daily back-up on India-located servers</td><td>Income-tax + Co. Act</td><td>R.46(8) / R.3(5)</td></tr>
+        <tr><td>Backup recoverability tested; cloud/IP and storage details on record</td><td>Best practice</td><td>—</td></tr>
+        <tr><td>Annual Registrar intimation of e-record service-provider details filed</td><td>Companies Act</td><td>R.3(6)</td></tr>
+        <tr><td>Books at registered office; AOC-5 if elsewhere; branch/godown records on-site</td><td>Companies Act</td><td>Sec 128(1)/(2)</td></tr>
+        <tr><td>Retained at least 8 financial years; longer if a proceeding is pending</td><td>Companies Act</td><td>Sec 128(5)</td></tr>
+        <tr><td>Method of accounting consistent with preceding year (change documented)</td><td>Income-tax</td><td>Form 26 Cl.15</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="result-box amber" style="margin-top:8px;">
+    <div class="result-label">Tax auditor — to report in Form 26 (Part B)</div>
+    <div class="result-note"><strong>Clause 13</strong> list of books (incl. computer system) · <strong>Clause 14</strong> address(es), software, cloud/IP &amp; country, Rule 46(8) compliance (Yes/No) and India back-up server address · <strong>Clause 15</strong> method of accounting and any change from the preceding year.</div>
+  </div>
+
+  <div class="result-box red" style="margin-top:8px;">
+    <div class="result-label">Flag in the report if</div>
+    <div class="result-note">Audit trail absent or disableable; daily backup not taken or not on India servers; books incomplete or under-retained; or Registrar intimation not filed.</div>
+  </div>
+</div>
+
+<!-- ============================== TAB: ELECTRONIC BACKUP ============================== -->
+<div id="tab-backup" class="tab-content">
+  <h2 class="section-heading">Electronic Backup — Practical Guidance</h2>
+  <p class="section-sub">Best-practice strategy for meeting the daily back-up requirement (Rule 46(8) / Rule 3) without overwhelming storage</p>
+
+  <div class="result-box red" style="margin-bottom:14px;">
+    <div class="result-label">New Requirement — Act Now</div>
+    <div class="result-note">The daily electronic back-up rule is a <strong>new requirement under the Income Tax Act 2025, applicable from Tax Year 2026-27 onwards</strong>. Compliance should begin immediately. Non-compliance will be <strong>reported by the tax auditor in Form 26</strong> and may attract <strong>penalties</strong>.</div>
+  </div>
+
+  <div class="result-box amber" style="margin-bottom:16px;">
+    <div class="result-label">Rule 46(8), IT Rules 2026 — Legal Baseline</div>
+    <div class="result-note">Where books of account are maintained electronically, <strong>Rule 46(8)</strong> (effective <strong>1 April 2026</strong>) requires: (1) the data must remain <strong>accessible in India at all times</strong>; (2) a <strong>daily</strong> back-up — not periodic; and (3) stored on servers <strong>physically located in India</strong>, ruling out overseas-only cloud storage of primary tax records. This applies to all individuals, HUFs and professionals required to keep books under <strong>Section 62</strong>, for records from <strong>Tax Year 2026-27</strong> onwards. The guidance below is practical IT best practice for achieving this — it is not itself a statutory requirement.</div>
+  </div>
+
+  <!-- APPLICABILITY MATRIX -->
+  <div class="card card-accent" style="margin-bottom:12px;">
+    <div class="card-title">Who is covered — Applicability under Sec 62 &amp; Sec 63</div>
+    <div class="card-body">
+      Rule 46(8) reaches every person required to keep books under the Act whose records are maintained electronically. Two thresholds drive coverage:
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">62</div><div><strong>Sec 62 (Maintenance):</strong> Individuals / HUFs in business — income &gt; <strong>₹2.5 L</strong> or turnover &gt; <strong>₹25 L</strong> in any of the 3 preceding years; specified professionals over the statutory limits; <strong>Companies, LLPs and partnership firms — automatic, no turnover threshold.</strong></div></li>
+        <li><div class="icon">63</div><div><strong>Sec 63 (Tax Audit):</strong> Businesses &gt; <strong>₹1 Cr</strong> turnover — scaling to <strong>₹10 Cr</strong> where ≥95% of receipts/payments flow through banking or prescribed electronic modes; professionals &gt; <strong>₹50 L</strong> gross receipts.</div></li>
+      </ul>
+      <div style="margin-top:8px;font-size:13px;color:var(--text-secondary);">Mirrors the MCA <em>Companies (Accounts) Rules</em> daily-backup standard — Rule 46(8) <strong>extends it to all categories</strong> of digital-records taxpayers, not just companies.</div>
+    </div>
+  </div>
+
+  <!-- PENALTY + BJA -->
+  <div class="result-box red" style="margin-bottom:14px;">
+    <div class="result-label">Penalty &amp; Collateral Risk — Why ₹25,000 Isn't the Real Number</div>
+    <div class="result-note">
+      <div class="table-wrap" style="margin-top:8px;">
+        <table class="ref-table">
+          <thead>
+            <tr><th>Failure</th><th>Direct fine</th><th>Collateral statutory impact</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Daily backup not maintained on Indian servers</td>
+              <td><strong>₹25,000</strong></td>
+              <td>Rejection of electronic records → <strong>Best-Judgment Assessment</strong> by AO (estimated profit, disallowed expenses, demand notice).</td>
+            </tr>
+            <tr>
+              <td>Incorrect certification by tax auditor</td>
+              <td><strong>₹10,000</strong></td>
+              <td>Audit qualification; high-risk flag in CBDT insight engines; recurring scrutiny exposure.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;"><strong>The teeth:</strong> if the AO holds that the daily-backup lifecycle was broken or kept on unverified offshore servers, the books can be rejected wholesale — opening the door to <strong>Best-Judgment Assessment</strong> where the AO estimates net profit on industry averages, disallows legitimate expenses, and raises a demand on the inflated figure. The ₹25,000 fine is dwarfed by the BJA exposure.</div>
+    </div>
+  </div>
+
+  <!-- DAILY INTERPRETATION -->
+  <div class="card card-accent" style="margin-bottom:12px;">
+    <div class="card-title">Interpreting "Daily" — The Day-End Cut-off</div>
+    <div class="card-body">
+      Random, weekly or ad-hoc snapshots <strong>do not satisfy</strong> the rule. The phrase "<em>daily at the close of every business day</em>" is read strictly by tax authorities.
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">→</div><div><strong>Single-shift business:</strong> backup at the end of local operational hours.</div></li>
+        <li><div class="icon">→</div><div><strong>24/7 or multi-timezone operations</strong> (e-commerce, IT services, SaaS): fix an explicit cut-off (e.g. <strong>23:59 IST</strong>), <strong>document it in the internal compliance policy</strong>, and run the automated backup at that exact interval every day.</div></li>
+        <li><div class="icon">→</div><div>Auditors look for evidence of the documented cut-off — keep the policy on letterhead and produce it alongside the daily run logs.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CLOUD TRAP -->
+  <div class="card card-accent" style="margin-bottom:16px;">
+    <div class="card-title">The Cloud Trap — Access ≠ Data Residency</div>
+    <div class="card-body">
+      Logging into a foreign-hosted ERP from an office terminal in Mumbai or Pune <strong>does not satisfy</strong> the data-localisation requirement. The physical backup must sit on a server <strong>inside India</strong>.
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">!</div><div>If the primary ERP/SaaS runs on Singapore, Ireland, US-East or any other overseas region, set up an <strong>independent secondary pipeline</strong> that replicates accounting data to an India-resident node daily.</div></li>
+        <li><div class="icon">!</div><div>Secure <strong>written confirmation from the vendor</strong> that both the primary and backup data centres are physically located in India — retain it for the auditor.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BACKUP TYPES -->
+  <div style="margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">1. Recommended Backup Types</div>
+
+  <div class="card card-accent">
+    <div class="card-title">Daily — Incremental</div>
+    <div class="card-body">Backs up only the data changed since the previous day. Fast to run and storage-efficient, which makes a genuine daily back-up practical.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Weekly / Monthly — Full</div>
+    <div class="card-body">A complete back-up each weekend or month creates a clean baseline and shortens the incremental chain, which speeds up recovery when you actually need to restore.</div>
+  </div>
+
+  <!-- RETENTION SCHEDULE -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">2. Tiered Retention (Grandfather–Father–Son)</div>
+
+  <div class="result-box navy" style="margin-bottom:12px;">
+    <div class="result-note">Keeping daily increments for 7–8 years is impractical and the storage cost balloons. Instead, cascade the retention:</div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>What to keep</th>
+          <th>How long</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Short-term</strong></td>
+          <td>Daily incremental + weekly full</td>
+          <td>1 to 4 weeks</td>
+        </tr>
+        <tr>
+          <td><strong>Medium-term</strong></td>
+          <td>Monthly full backups</td>
+          <td>6 to 12 months</td>
+        </tr>
+        <tr>
+          <td><strong>Long-term (compliance)</strong></td>
+          <td>One year-end full backup</td>
+          <td>7 to 8 years</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="font-size:12px;color:var(--text-secondary);margin-top:6px;">The single year-end archive satisfies legal, tax and audit retention without storing every daily increment for years.</div>
+
+  <!-- BEST PRACTICES -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">3. Compliance &amp; Storage Best Practices</div>
+
+  <div class="card card-accent">
+    <div class="card-title">The 3-2-1 Rule</div>
+    <div class="card-body">Keep <strong>3</strong> copies of data, on <strong>2</strong> different media types (e.g. cloud + local server), with <strong>1</strong> copy offsite.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Indian Legal Requirement</div>
+    <div class="card-body">For electronic books of account under the Income-tax Rules, a daily back-up must be taken and stored on servers <strong>physically located in India</strong>.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Immutable Backups</div>
+    <div class="card-body">Protect the long-term 7–8 year archives with <strong>WORM</strong> (Write Once, Read Many) storage or ransomware protection so the data cannot be tampered with.</div>
+  </div>
+
+  <!-- AUTOMATION -->
+  <div style="margin-top:20px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">4. Automate It — Don't Rely on Memory</div>
+
+  <div class="result-box red" style="margin-bottom:10px;">
+    <div class="result-label">Why this matters</div>
+    <div class="result-note">A daily back-up is now a legal obligation, but a manual daily task is the easiest thing to forget — and one missed day is a compliance gap the auditor must report. The only reliable way to meet a <em>daily</em> requirement is to automate it so it runs without anyone remembering.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Schedule it</div>
+    <div class="card-body">Set the backup to run automatically every day at a fixed time (e.g. after close of business) via the accounting software's built-in scheduler, the operating system's task scheduler, or your cloud provider's backup policy. No human step in the daily loop.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Alert on failure</div>
+    <div class="card-body">Configure email/SMS alerts so that if a backup fails or is skipped, the responsible person is notified the same day and can fix it — rather than discovering the gap months later at audit.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Log every run</div>
+    <div class="card-body">Keep an automatic log of each backup (date, time, success/failure, destination server). These run records are themselves part of compliance and are exactly what the auditor checks.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Verify automatically</div>
+    <div class="card-body">Use a managed/cloud service that confirms each backup landed on an India-located server, and schedule a periodic automated restore test so a silent corruption doesn't go unnoticed.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Cryptographic hash on every backup</div>
+    <div class="card-body">Pair each daily backup file with a <strong>SHA-256</strong> (or MD5) hash and a timestamped log capturing execution time, file size, destination IP/location, and the hash. The hash chain is what proves the records weren't edited after the fact — and is exactly what the auditor inspects.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Retention pipeline — Rule 46(9)</div>
+    <div class="card-body">Automate archival rules to preserve the daily India-resident snapshots for the statutory <strong>7 tax years</strong> under <strong>Rule 46(9)</strong>. Pair this with a year-end full backup retained for the longer 8-year window so both Income-tax and Companies Act bases are covered.</div>
+  </div>
+
+  <div class="result-box amber" style="margin-top:14px;">
+    <div class="result-label">Note</div>
+    <div class="result-note">Backup design depends on data volume, industry and whether you run cloud, local or hybrid infrastructure. Treat this as a starting framework and tailor it to your environment.</div>
+  </div>
+
+  <!-- CASE STUDIES -->
+  <div style="margin-top:24px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Case Studies — Compliance Failure vs Success</div>
+  <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Two contrasting Rule 46(8) compliance approaches observed in TY 2026-27.</p>
+
+  <div class="card" style="border-left:4px solid var(--red);margin-bottom:12px;">
+    <div class="card-title" style="color:var(--red);">✕ Alpha Logistics Pvt. Ltd. — Distributed Cloud Failure</div>
+    <div class="card-body">
+      Western-India supply-chain operator running a custom open-source ERP on offshore cloud. To cut cloud-egress costs the IT team scheduled <strong>weekly</strong> server snapshots — each snapshot overwriting the previous master image.
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">→</div><div>May 2026 — Assessing Officer requested timestamped per-day backup state for a specific week in April.</div></li>
+        <li><div class="icon">→</div><div>Only a single weekly consolidated image existed; no individual Tuesday/Wednesday state could be produced.</div></li>
+        <li><div class="icon">→</div><div><strong>Result:</strong> records flagged "unverifiable", non-compliance notice under Rule 46(8), deeper integrity audit triggered, regular tax clearance delayed.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--green);margin-bottom:18px;">
+    <div class="card-title" style="color:var(--green);">✓ Nayan Manufacturing — Automated Compliance Success</div>
+    <div class="card-body">
+      Maharashtra mid-sized manufacturer, ₹45 Cr turnover. Migrated systems ahead of the 1 April 2026 deadline.
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">→</div><div>Every night at <strong>23:30 IST</strong>: ERP locks the day's transactions → generates a compressed, encrypted backup → SFTP to an <strong>AWS Mumbai</strong> bucket.</div></li>
+        <li><div class="icon">→</div><div>Each run writes a timestamped log with a unique <strong>SHA-256</strong> hash of that day's dataset.</div></li>
+        <li><div class="icon">→</div><div>At statutory audit: 365 daily server receipts + IP-location certificates handed to the auditor.</div></li>
+        <li><div class="icon">→</div><div><strong>Result:</strong> compliance verified cleanly; filings completed without structural flags or delays.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="font-size:12px;color:var(--text-secondary);margin-bottom:18px;">Statutory framing per Affluence Advisory analysis on Taxguru (29 Jun 2026). Refer to the bare text of <strong>Rule 46(8)</strong> and <strong>Rule 46(9)</strong>, Income-tax Rules 2026 for authoritative wording.</div>
+
+  <!-- SAMPLE POLICY -->
+  <div style="margin-top:24px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Sample Backup Policy — Manufacturing Company</div>
+  <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">A plain-language template you can adapt. Download it as a Word file and put it on your company letterhead.</p>
+
+  <button class="btn-action" style="margin-bottom:14px;max-width:280px;" onclick="downloadPolicy()"><span id="dl-label">Download sample policy (Word)</span></button>
+
+  <div class="card card-accent">
+    <div class="card-title">1. What this policy is for</div>
+    <div class="card-body">It explains how the company keeps safe copies (backups) of its important computer records — accounts, production and stock data, quality records, design files, and HR/payroll — so nothing is lost and the law is followed.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">2. How often we take backups</div>
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">1</div><div><strong>Every day</strong> — a quick backup of whatever changed that day (kept for 4 weeks).</div></li>
+        <li><div class="icon">2</div><div><strong>Every week</strong> — a complete copy of everything (kept for about 8 weeks).</div></li>
+        <li><div class="icon">3</div><div><strong>Every month</strong> — a complete copy at month-end (kept for 12 months).</div></li>
+        <li><div class="icon">4</div><div><strong>Once a year</strong> — a full year-end copy after the audit, <strong>kept for 8 years</strong>. This is the copy that satisfies the income-tax and Companies Act record-keeping rules.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">3. Making sure it actually happens (automation)</div>
+    <div class="card-body">Because a daily backup is easy to forget, we automate it rather than rely on anyone to remember:
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">&#8594;</div><div>The daily backup runs <strong>automatically at a set time</strong> each day, with no manual step.</div></li>
+        <li><div class="icon">&#8594;</div><div>If a backup <strong>fails or is missed, an alert</strong> goes to the responsible person the same day.</div></li>
+        <li><div class="icon">&#8594;</div><div>Every run is <strong>logged</strong> (date, time, success/failure, destination) as a compliance record.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">4. Following the law</div>
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">→</div><div>A backup is taken <strong>every day</strong> and stored on a server <strong>located in India</strong> (required from Tax Year 2026-27).</div></li>
+        <li><div class="icon">→</div><div>The accounting software keeps an <strong>audit trail</strong> (a tamper-proof log of every entry and edit) that cannot be switched off.</div></li>
+        <li><div class="icon">→</div><div>Once a year we inform the Registrar of the software/service provider details (name, location, and cloud address if used).</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">5. Keeping copies safe (the 3-2-1 rule)</div>
+    <div class="card-body">Keep <strong>3 copies</strong> of important data, on <strong>2 different types of storage</strong> (for example, an office server and the cloud), with <strong>1 copy kept somewhere else</strong> (offsite), so a fire, theft or computer failure at one place cannot wipe out everything.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">6. Things specific to a factory</div>
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">→</div><div><strong>Machine and shop-floor computers</strong> — take a full image weekly; rebuilding them from scratch is slow and costly.</div></li>
+        <li><div class="icon">→</div><div><strong>Accounting / ERP system</strong> — back up properly so it can be restored cleanly, not just as loose files.</div></li>
+        <li><div class="icon">→</div><div><strong>Design and drawing files</strong> — these are valuable company property; keep extra protected copies.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">7. Keeping backups secure</div>
+    <div class="card-body">Long-term yearly copies are stored in a "write-once" form that cannot be changed or deleted, protecting them from accidental loss or ransomware. All backups are password-protected and encrypted.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">8. Checking that backups actually work</div>
+    <div class="card-body">Every three months the IT team does a test restore from a backup to confirm the data can really be recovered — because an untested backup cannot be relied upon. The policy is reviewed once a year by Finance and IT together.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">9. Who is responsible</div>
+    <div class="card-body">
+      <ul class="books-list">
+        <li><div class="icon">→</div><div><strong>IT Head</strong> — runs the backups and the quarterly restore tests.</div></li>
+        <li><div class="icon">→</div><div><strong>CFO / Finance Head</strong> — ensures the accounts records and the India-server rule are followed.</div></li>
+        <li><div class="icon">→</div><div><strong>Auditor</strong> — checks during the audit that records have been kept as required.</div></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== TAB: CLOUD SOLUTIONS ============================== -->
+<div id="tab-cloud" class="tab-content">
+  <h2 class="section-heading">Cloud &amp; Backup Solutions</h2>
+  <p class="section-sub">How to meet the Rule 46(8) daily-backup-in-India requirement — deployment options compared</p>
+
+  <div class="result-box navy" style="margin-bottom:16px;">
+    <div class="result-label">The Compliance Question</div>
+    <div class="result-note">Rule 46(8) requires a daily back-up of electronic books on servers <strong>physically located in India</strong>, accessible at all times. The practical question for every business is <em>where</em> to host that back-up. The options below are the common routes.</div>
+  </div>
+
+  <!-- DEPLOYMENT OPTIONS COMPARISON -->
+  <div style="margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Deployment Options — Compared</div>
+
+  <div class="table-wrap" style="margin-bottom:16px;">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Option</th>
+          <th>India data residency</th>
+          <th>Daily backup</th>
+          <th>Best suited for</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>On-premise server</strong></td>
+          <td>Yes — fully in your control</td>
+          <td>Manual setup &amp; monitoring needed</td>
+          <td>Firms with in-house IT and capex appetite</td>
+        </tr>
+        <tr>
+          <td><strong>Managed cloud (India region) — e.g. <a href="https://webtel.in/Cloud-Solutions" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Webtel</a></strong></td>
+          <td>Yes — hosted in India</td>
+          <td>Built-in, automated, managed</td>
+          <td>CAs, SMEs and professionals wanting compliance without IT overhead</td>
+        </tr>
+        <tr>
+          <td><strong>Global hyperscalers (AWS / Azure / GCP)</strong></td>
+          <td>Only if India region is explicitly selected</td>
+          <td>Configurable (you manage policy)</td>
+          <td>Larger enterprises with cloud teams</td>
+        </tr>
+        <tr>
+          <td><strong>Overseas-only cloud</strong></td>
+          <td style="color:var(--red);font-weight:600;">No — non-compliant for primary tax records</td>
+          <td>N/A</td>
+          <td>Not suitable as the sole store</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WEBTEL OFFERINGS -->
+  <div style="margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Webtel Cloud Services</div>
+  <p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:12px;">Webtel offers India-hosted cloud and backup services that map directly to the Rule 46(8) requirement.</p>
+
+  <div class="card card-accent">
+    <div class="card-title"><a href="https://webtel.in/Backup.aspx" target="_blank" rel="noopener" style="color:var(--navy);text-decoration:none;">Backup Service (BaaS) ↗</a></div>
+    <div class="card-body">Business data backup hosted in India — directly addresses the daily-backup-on-India-servers requirement. Protects against data loss or theft on cost-efficient pricing models.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title"><a href="https://webtel.in/Web-e-Connect-VM.aspx" target="_blank" rel="noopener" style="color:var(--navy);text-decoration:none;">Web-e-Connect — Virtual Machine ↗</a></div>
+    <div class="card-body">A cloud virtual machine for data storage and access, giving work flexibility and data security without maintaining physical servers in-house.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title"><a href="https://webtel.in/Web-e-Connect-RDP.aspx" target="_blank" rel="noopener" style="color:var(--navy);text-decoration:none;">Web-e-Connect — Remote Server Access (RDP) ↗</a></div>
+    <div class="card-body">Access your business software, books of account and applications from anywhere, anytime, via a hosted remote server.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">PaaS &amp; SaaS</div>
+    <div class="card-body"><a href="https://webtel.in/PaaS.aspx" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Platform-as-a-Service</a> (hardware and software tools delivered over the internet for application development) and <a href="https://webtel.in/SaaS.aspx" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Software-as-a-Service</a> (hosted software delivered to end-users).</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Google Workspace &amp; Microsoft 365</div>
+    <div class="card-body"><a href="https://webtel.in/Google-Workspace.aspx" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Google Workspace</a> and <a href="https://webtel.in/Microsoft-365.aspx" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Microsoft 365</a> — productivity and collaboration suites provided with integration and support, for email and document workflows alongside the accounting stack.</div>
+  </div>
+
+  <div class="result-box amber" style="margin-top:14px;">
+    <div class="result-label">For MITR Users</div>
+    <div class="result-note">If your books are maintained electronically, pairing your accounting software with an India-hosted managed backup is the simplest way to stay Rule 46(8)-compliant. Learn more at <a href="https://webtel.in/Cloud-Solutions" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline;font-weight:600;">webtel.in/Cloud-Solutions</a> or contact contactus@webtel.co.in · +91 73033 93220.</div>
+  </div>
+
+  <div style="margin-top:10px;font-size:11px;color:var(--text-secondary);">Comparison is indicative and based on deployment type, not a benchmarked review of named providers. Verify current specifications and pricing with each provider.</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  Part of <strong style="color:var(--gold);">MITR</strong> by Webtel Electrosoft &nbsp;·&nbsp; <a href="https://itact25.com">itact25.com</a> &nbsp;·&nbsp; <a href="mailto:MITR@webtel.in">MITR@webtel.in</a>
+</footer>
+
+<script>
+  function showTab(id) {
+    var tabs = document.querySelectorAll('.tab-content');
+    var btns = document.querySelectorAll('.tab-btn');
+    for (var i = 0; i < tabs.length; i++) { tabs[i].classList.remove('active'); }
+    for (var j = 0; j < btns.length; j++) { btns[j].classList.remove('active'); }
+    document.getElementById(id).classList.add('active');
+    var map = { 'tab-books': 0, 'tab-professions': 1, 'tab-checker': 2, 'tab-form26': 3, 'tab-coact': 4, 'tab-gst': 5, 'tab-compare': 6, 'tab-company': 7, 'tab-backup': 8, 'tab-cloud': 9 };
+    btns[map[id]].classList.add('active');
+  }
+
+  function toggleFlow() {
+    var wrap = document.getElementById('flow-wrap');
+    var toggle = document.getElementById('flow-toggle');
+    if (wrap.style.display === 'none') {
+      wrap.style.display = 'block';
+      toggle.textContent = 'hide \u25B4';
+      replayFlowAnimation();
+    } else {
+      wrap.style.display = 'none';
+      toggle.textContent = 'show \u25BE';
+    }
+  }
+
+  function showFlow(which) {
+    document.getElementById('flow-spec').style.display = (which === 'spec') ? 'flex' : 'none';
+    document.getElementById('flow-ns').style.display = (which === 'ns') ? 'flex' : 'none';
+    document.getElementById('ft-spec').classList.toggle('active', which === 'spec');
+    document.getElementById('ft-ns').classList.toggle('active', which === 'ns');
+    replayFlowAnimation();
+  }
+
+  function replayFlowAnimation() {
+    var visible = document.getElementById('flow-spec').style.display !== 'none' ? 'flow-spec' : 'flow-ns';
+    var nodes = document.getElementById(visible).querySelectorAll('.animate-in');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      el.style.animation = 'none';
+      // force reflow
+      void el.offsetWidth;
+      el.style.animation = '';
+    }
+  }
+
+  function onCategoryChange() {
+    var cat = getRadio('category');
+    document.getElementById('fields-specified').style.display = (cat === 'specified') ? 'block' : 'none';
+    document.getElementById('fields-nonspec').style.display = (cat === 'nonspec') ? 'block' : 'none';
+  }
+
+  function resetChecker() {
+    var inputs = document.querySelectorAll('#tab-checker input[type="number"]');
+    for (var i = 0; i < inputs.length; i++) { inputs[i].value = ''; }
+    var radios = document.querySelectorAll('#tab-checker input[type="radio"]');
+    for (var r = 0; r < radios.length; r++) { radios[r].checked = false; }
+    // restore defaults
+    setRadio('newsetup', 'no');
+    setRadio('spec-presumptive', 'no');
+    setRadio('subtype', 'profession');
+    setRadio('ns-assessee', 'ihuf');
+    setRadio('ns-presumptive', 'no');
+    setRadio('ns-lower', 'no');
+    document.getElementById('fields-specified').style.display = 'none';
+    document.getElementById('fields-nonspec').style.display = 'none';
+    document.getElementById('results-panel').style.display = 'none';
+    var sb = document.querySelectorAll('.scenario-btn');
+    for (var s = 0; s < sb.length; s++) { sb[s].classList.remove('selected'); }
+    var desc = document.getElementById('scenario-desc');
+    if (desc) { desc.style.display = 'none'; }
+  }
+
+  function copyResult() {
+    var cat = document.getElementById('res-cat-val').textContent;
+    var catNote = document.getElementById('res-cat-note').textContent;
+    var books = document.getElementById('res-books-note').textContent;
+    var retBox = document.getElementById('res-retention');
+    var lines = [];
+    lines.push('MITR \u2014 Books of Account & Backup Reckoner');
+    lines.push('');
+    lines.push('Result: ' + cat);
+    if (catNote) { lines.push(catNote); }
+    if (books) { lines.push(books); }
+    if (retBox.style.display !== 'none') {
+      lines.push('');
+      lines.push('Retention: ' + document.getElementById('res-ret-val').textContent);
+    }
+    var chips = document.querySelectorAll('#chip-container .chip');
+    if (chips.length) {
+      var provs = [];
+      for (var i = 0; i < chips.length; i++) { provs.push(chips[i].textContent); }
+      lines.push('');
+      lines.push('Provisions: ' + provs.join(' \u00B7 '));
+    }
+    lines.push('');
+    lines.push('via itact25.com');
+    var text = lines.join('\n');
+
+    var label = document.getElementById('copy-label');
+    function done() { label.textContent = 'Copied \u2713'; setTimeout(function(){ label.textContent = 'Copy result'; }, 1800); }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+
+  function fallbackCopy(text, cb) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    if (cb) { cb(); }
+  }
+
+  function printResult() {
+    window.print();
+  }
+
+  function downloadCompanyPDF() {
+    var css = '<style>'
+      + '@page{size:A4;margin:18mm 14mm 16mm 14mm;}'
+      + '*{box-sizing:border-box;}'
+      + 'body{font-family:Georgia,\'Times New Roman\',serif;color:#1c2433;font-size:11pt;line-height:1.55;margin:0;}'
+      + 'h1{font-size:20pt;color:#0B1D3A;margin:0 0 2pt;}'
+      + '.sub{font-size:9pt;color:#6b7280;margin-bottom:12pt;}'
+      + 'h2{font-size:13pt;color:#0B1D3A;margin:18pt 0 7pt;border-bottom:2px solid #C8A44E;padding-bottom:4pt;}'
+      + 'p{margin:0 0 6pt;} ul{margin:4pt 0 8pt;padding-left:16pt;} li{margin-bottom:4pt;}'
+      + 'table{width:100%;border-collapse:collapse;margin:6pt 0 10pt;font-size:9pt;}'
+      + 'th{background:#0B1D3A;color:#fff;text-align:left;padding:5pt 6pt;} thead{display:table-header-group;} tr{page-break-inside:avoid;}'
+      + 'td{border:0.5pt solid #d8d2c4;padding:5pt 6pt;vertical-align:top;}'
+      + '.box{border-radius:4pt;padding:9pt 12pt;margin-bottom:9pt;}'
+      + '.box .lbl{font-size:8pt;text-transform:uppercase;letter-spacing:0.5pt;font-weight:bold;margin-bottom:3pt;}'
+      + '.navy{background:#eef1f6;border-left:3pt solid #0B1D3A;} .navy .lbl{color:#0B1D3A;}'
+      + '.amber{background:#fbf3e0;border-left:3pt solid #C8A44E;} .amber .lbl{color:#9a7a1e;}'
+      + '.red{background:#fae8e8;border-left:3pt solid #8B1A1A;} .red .lbl{color:#8B1A1A;}'
+      + '.green{background:#e8f3ec;border-left:3pt solid #2e7d4f;} .green .lbl{color:#2e7d4f;}'
+      + '.pb{page-break-before:always;} .disc{font-size:8pt;color:#9aa0aa;margin-top:16pt;border-top:0.5pt solid #e3ddcf;padding-top:6pt;}'
+      + '</style>';
+
+    var h = [];
+    h.push('<h1>Company Compliance \u2014 Books of Account &amp; Backup</h1>');
+    h.push('<div class="sub">A complete checklist of what a company must do \u00B7 MITR Master Income Tax Reckoner \u00B7 itact25.com</div>');
+    h.push('<div class="box navy"><div class="lbl">How to read this</div>One unified set of obligations for an operating company. Where the laws differ on a period or deadline, the <b>strictest</b> requirement has been applied throughout \u2014 so following this keeps the company compliant on every front without tracking each law separately.</div>');
+
+    h.push('<h2>1. Books &amp; Records to Maintain</h2>');
+    h.push('<p>Maintain one set of accounts on the <b>accrual basis</b> using the <b>double-entry system</b>, giving a true and fair view. Keep:</p><ul>');
+    h.push('<li>Cash book, bank book, journal and ledger</li>');
+    h.push('<li>Sales/outward and purchase/inward supply registers (invoice and tax details)</li>');
+    h.push('<li>Stock register \u2014 incl. scrap, wastage, and goods lost/stolen/destroyed/written off/gifted/free-sampled</li>');
+    h.push('<li>ITC register; output tax register; account of advances</li>');
+    h.push('<li>Fixed asset register and depreciation schedule</li>');
+    h.push('<li>Tax invoices, bills of supply, credit/debit notes, delivery challans, vouchers; supplier/recipient/storage details</li>');
+    h.push('<li>Financial statements (P&amp;L, Balance Sheet, Cash Flow \u2014 Schedule III)</li>');
+    h.push('<li>Manufacturers: monthly production accounts \u00B7 Service providers: input-service details</li></ul>');
+
+    h.push('<h2>2. How Records Must Be Kept</h2><ul>');
+    h.push('<li>Physical or electronic. <b>No erasing/overwriting</b> \u2014 score out incorrect entries (other than clerical) under attestation; keep an edit/deletion log for electronic records.</li>');
+    h.push('<li>Manual volumes <b>serially numbered</b>; electronic records original/legible, complete and unaltered.</li>');
+    h.push('<li>Accounting software with a <b>non-disableable audit trail</b> (mandatory FY 2023-24 onwards).</li>');
+    h.push('<li>Electronic records <b>authenticated</b> (e.g. digital signature) and <b>accessible in India at all times</b>.</li></ul>');
+
+    h.push('<h2 class="pb">3. Electronic Backup \u2014 Mandatory Daily</h2>');
+    h.push('<div class="box red"><div class="lbl">New &amp; immediate</div>The daily-backup-in-India requirement is new for income-tax, effective <b>1 April 2026</b> (records from TY 2026-27). Begin immediately \u2014 failure is reported by the tax auditor and may attract penalties.</div><ul>');
+    h.push('<li><b>Daily back-up</b> on servers <b>physically located in India</b> \u2014 including a copy of any data held overseas.</li>');
+    h.push('<li>Tiered retention: daily incremental + weekly full (1\u20134 weeks) \u00B7 monthly full (6\u201312 months) \u00B7 one year-end full (8 years).</li>');
+    h.push('<li><b>3-2-1 rule</b> (3 copies, 2 media, 1 offsite); <b>immutable/WORM</b> long-term archive; <b>quarterly restore tests</b>.</li></ul>');
+
+    h.push('<h2>4. Retention Period</h2>');
+    h.push('<div class="box amber"><div class="lbl">Strictest standard</div>Retain all books, records, vouchers and backups for <b>at least 8 financial years</b> from the end of the financial year.</div>');
+    h.push('<p>Keep them <b>longer where any proceeding is pending</b> \u2014 assessment, reassessment, appeal, revision or investigation \u2014 until finally concluded, even if 8 years have lapsed.</p>');
+
+    h.push('<h2>5. Where to Keep the Books</h2><ul>');
+    h.push('<li>Primary books at the <b>registered office</b> (usually also the principal place of business).</li>');
+    h.push('<li>To keep them elsewhere in India \u2014 Board resolution + <b>Form AOC-5</b> to the Registrar within <b>7 days</b>.</li>');
+    h.push('<li>Multi-location: location-specific records at each site; electronic records accessible from every related place.</li></ul>');
+
+    h.push('<h2>6. Consequences of Default</h2><ul>');
+    h.push('<li><b>Income Tax:</b> failure to maintain books \u2014 \u20B925,000 penalty on the company. Incorrect information in an audit report/certificate \u2014 \u20B910,000 on the accountant (CA) for <i>each</i> such report/certificate (Sec 271J), no intent required, relief only on proof of reasonable cause. Backup details not reported, or reported incorrectly, fall in this category.</li>');
+    h.push('<li><b>GST:</b> general penalty up to \u20B925,000 (CGST/SGST); unaccounted goods/services may be taxed as if supplied.</li>');
+    h.push('<li><b>Company-law default:</b> fine \u20B950,000 to \u20B95,00,000 on the responsible officer (MD / WTD-finance / CFO / charged person).</li></ul>');
+
+    h.push('<h2 class="pb">7. Auditor / Tax Auditor Verification Checklist</h2>');
+    h.push('<table><thead><tr><th>Verification point</th><th>Law</th><th>Reference</th></tr></thead><tbody>');
+    var rows = [
+      ['Accrual basis, double-entry; true and fair view','Companies Act','Sec 128(1)'],
+      ['Complete record set \u2014 cash/bank, journal, ledger, sales &amp; purchase, stock, fixed asset registers','All three','\u2014'],
+      ['GST registers \u2014 supplies, ITC (availed/reversed/utilised), output tax, advances','GST','Sec 35 / R.56'],
+      ['Supporting documents \u2014 invoices, bills of supply, credit/debit notes, challans, vouchers','All three','\u2014'],
+      ['Stock register captures scrap, wastage, lost/stolen/destroyed/written-off/gifted goods','GST','R.56(2)'],
+      ['Production accounts (manufacturers) / input-service details (services)','GST','R.56(12)-(13)'],
+      ['No erasing/overwriting; attested corrections; serial numbering','GST','R.56(8)-(9)'],
+      ['Non-disableable audit trail, operative through the year (FY 2023-24+)','Companies Act','R.3(1) proviso'],
+      ['E-records accessible in India, original/legible format, edit/deletion log','Income-tax + Co. Act','R.46(8) / R.3'],
+      ['Daily back-up on India-located servers','Income-tax + Co. Act','R.46(8) / R.3(5)'],
+      ['Backup recoverability tested; cloud/IP and storage details on record','Best practice','\u2014'],
+      ['Annual Registrar intimation of e-record service-provider details filed','Companies Act','R.3(6)'],
+      ['Books at registered office; AOC-5 if elsewhere; branch/godown records on-site','Companies Act','Sec 128(1)/(2)'],
+      ['Retained at least 8 financial years; longer if a proceeding is pending','Companies Act','Sec 128(5)'],
+      ['Method of accounting consistent with preceding year (change documented)','Income-tax','Form 26 Cl.15']
+    ];
+    for (var i = 0; i < rows.length; i++) {
+      h.push('<tr><td>' + rows[i][0] + '</td><td>' + rows[i][1] + '</td><td>' + rows[i][2] + '</td></tr>');
+    }
+    h.push('</tbody></table>');
+    h.push('<div class="box amber"><div class="lbl">Tax auditor \u2014 to report in Form 26 (Part B)</div><b>Clause 13</b> list of books (incl. computer system) \u00B7 <b>Clause 14</b> address(es), software, cloud/IP &amp; country, Rule 46(8) compliance (Yes/No) and India back-up server address \u00B7 <b>Clause 15</b> method of accounting and any change from the preceding year.</div>');
+    h.push('<div class="box red"><div class="lbl">Flag in the report if</div>Audit trail absent or disableable; daily backup not taken or not on India servers; books incomplete or under-retained; or Registrar intimation not filed.</div>');
+
+    h.push('<div class="disc">Prepared from Webtel MITR (Master Income Tax Reckoner) \u2014 Books of Account &amp; Backup Reckoner: A reference summary for qualified professionals, not legal advice; verify against the bare Acts and Rules before relying on it. Reflects the Income-tax Act 2025 &amp; IT Rules 2026, Companies Act 2013 &amp; Companies (Accounts) Rules 2014, and the CGST Act &amp; Rules. www.itact25.com. For demo of MITR Contact: contactus@webtel.co.in or call +91 73033 93220.</div>');
+
+    var win = window.open('', '_blank');
+    if (!win) { alert('Please allow pop-ups to open the printable PDF.'); return; }
+    win.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Company Compliance — Books & Backup</title>' + css + '</head><body>' + h.join('') + '</body></html>');
+    win.document.close();
+    win.focus();
+    setTimeout(function(){ win.print(); }, 400);
+
+    var label = document.getElementById('cpdf-label');
+    if (label) { label.textContent = 'Opened \u2014 use Save as PDF'; setTimeout(function(){ label.textContent = 'Open full PDF (printable)'; }, 2500); }
+  }
+
+  function downloadPolicy() {
+    var p = [];
+    p.push('<h1>Data Backup &amp; Retention Policy</h1>');
+    p.push('<p><i>Sample template for a manufacturing company &mdash; adapt and place on company letterhead.</i></p>');
+    p.push('<p style="color:#8B1A1A;"><b>Compliance note:</b> The daily electronic back-up requirement is new under the Income Tax Act 2025, applicable from Tax Year 2026-27. Compliance should begin immediately; non-compliance is reported by the tax auditor in Form 26 and may attract penalties.</p>');
+
+    p.push('<h2>1. What this policy is for</h2>');
+    p.push('<p>It explains how the company keeps safe copies (backups) of its important computer records &mdash; accounts, production and stock data, quality records, design files, and HR/payroll &mdash; so nothing is lost and the law is followed.</p>');
+
+    p.push('<h2>2. How often we take backups</h2>');
+    p.push('<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;">');
+    p.push('<tr><th align="left">Backup</th><th align="left">What is copied</th><th align="left">Kept for</th></tr>');
+    p.push('<tr><td>Every day</td><td>Whatever changed that day</td><td>4 weeks</td></tr>');
+    p.push('<tr><td>Every week</td><td>A complete copy of everything</td><td>About 8 weeks</td></tr>');
+    p.push('<tr><td>Every month</td><td>A complete copy at month-end</td><td>12 months</td></tr>');
+    p.push('<tr><td>Once a year</td><td>Full year-end copy (after audit)</td><td>8 years &mdash; satisfies legal record-keeping</td></tr>');
+    p.push('</table>');
+
+    p.push('<h2>3. Following the law</h2>');
+    p.push('<ul>');
+    p.push('<li>A backup is taken every day and stored on a server located in India (required from Tax Year 2026-27).</li>');
+    p.push('<li>The accounting software keeps an audit trail (a tamper-proof log of every entry and edit) that cannot be switched off.</li>');
+    p.push('<li>Once a year we inform the Registrar of the software/service-provider details (name, location, and cloud address if used).</li>');
+    p.push('</ul>');
+
+    p.push('<h2>4. Keeping copies safe (the 3-2-1 rule)</h2>');
+    p.push('<p>Keep 3 copies of important data, on 2 different types of storage (for example, an office server and the cloud), with 1 copy kept somewhere else (offsite), so a fire, theft or computer failure at one place cannot wipe out everything.</p>');
+
+    p.push('<h2>5. Things specific to a factory</h2>');
+    p.push('<ul>');
+    p.push('<li>Machine and shop-floor computers &mdash; take a full image weekly; rebuilding them from scratch is slow and costly.</li>');
+    p.push('<li>Accounting / ERP system &mdash; back up properly so it can be restored cleanly, not just as loose files.</li>');
+    p.push('<li>Design and drawing files &mdash; valuable company property; keep extra protected copies.</li>');
+    p.push('</ul>');
+
+    p.push('<h2>6. Keeping backups secure</h2>');
+    p.push('<p>Long-term yearly copies are stored in a write-once form that cannot be changed or deleted, protecting them from accidental loss or ransomware. All backups are password-protected and encrypted.</p>');
+
+    p.push('<h2>7. Checking that backups actually work</h2>');
+    p.push('<p>Every three months the IT team does a test restore from a backup to confirm the data can really be recovered. The policy is reviewed once a year by Finance and IT together.</p>');
+
+    p.push('<h2>8. Who is responsible</h2>');
+    p.push('<ul>');
+    p.push('<li>IT Head &mdash; runs the backups and the quarterly restore tests.</li>');
+    p.push('<li>CFO / Finance Head &mdash; ensures the accounts records and the India-server rule are followed.</li>');
+    p.push('<li>Auditor &mdash; checks during the audit that records have been kept as required.</li>');
+    p.push('</ul>');
+
+    p.push('<hr><p style="font-size:10pt;color:#888;">Generated via MITR &mdash; Books of Account &amp; Backup Reckoner &middot; itact25.com. This is a sample template, not legal advice; validate with your IT and compliance teams.</p>');
+
+    var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+      + '<head><meta charset="utf-8"><title>Data Backup Policy</title>'
+      + '<style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#222;} h1{font-size:18pt;color:#0B1D3A;} h2{font-size:13pt;color:#0B1D3A;} table{font-size:10.5pt;} th{background:#0B1D3A;color:#fff;}</style>'
+      + '</head><body>' + p.join('') + '</body></html>';
+
+    var blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'MITR_Backup_Policy_Manufacturing.doc';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    var label = document.getElementById('dl-label');
+    if (label) {
+      label.textContent = 'Downloaded \u2713';
+      setTimeout(function(){ label.textContent = 'Download sample policy (Word)'; }, 1800);
+    }
+  }
+
+  function toggleProfDetail(id, tile) {
+    var el = document.getElementById(id);
+    if (el.style.display === 'none') {
+      el.style.display = 'block';
+      tile.classList.add('open');
+      var tapSpan = tile.querySelector('.prof-tap');
+      if (tapSpan) tapSpan.textContent = 'tap to close \u25B4';
+    } else {
+      el.style.display = 'none';
+      tile.classList.remove('open');
+      var tapSpan2 = tile.querySelector('.prof-tap');
+      if (tapSpan2) tapSpan2.textContent = 'tap for details \u25BE';
+    }
+  }
+
+  function onNewSetupChange() {
+    var ns = getRadio('newsetup');
+    document.getElementById('grp-spec-prev').style.display = (ns === 'no') ? 'block' : 'none';
+    document.getElementById('grp-spec-expected').style.display = (ns === 'yes') ? 'block' : 'none';
+  }
+
+  function onSpecPresumptiveChange() {
+    var p = getRadio('spec-presumptive');
+    document.getElementById('grp-spec-curr').style.display = (p === 'yes') ? 'block' : 'none';
+  }
+
+  function onNsPresumptiveChange() {
+    var p = getRadio('ns-presumptive');
+    document.getElementById('grp-ns-curr').style.display = (p === 'yes') ? 'block' : 'none';
+    document.getElementById('grp-ns-lower').style.display = (p === 'yes') ? 'block' : 'none';
+  }
+
+  function getRadio(name) {
+    var opts = document.querySelectorAll('input[name="' + name + '"]');
+    for (var i = 0; i < opts.length; i++) {
+      if (opts[i].checked) return opts[i].value;
+    }
+    return '';
+  }
+
+  function setRadio(name, val) {
+    var opts = document.querySelectorAll('input[name="' + name + '"]');
+    for (var i = 0; i < opts.length; i++) {
+      opts[i].checked = (opts[i].value === val);
+    }
+  }
+
+  function fmt(n) {
+    return '\u20B9' + Number(n).toLocaleString('en-IN');
+  }
+
+  // --- SCENARIOS ---
+  var SCENARIOS = {
+    'ca': {
+      label: 'CA in Practice',
+      desc: 'Chartered Accountant in individual practice. Existing. Highest preceding year receipts \u20B918L (exceeds \u20B91.5L). Not opting presumptive.',
+      category: 'specified', profession: 'accountancy',
+      newsetup: 'no', specPrev: 1800000, specPresumptive: 'no'
+    },
+    'doctor': {
+      label: 'Doctor / Clinic',
+      desc: 'Medical practitioner running a clinic. Existing. Highest preceding year receipts \u20B928L. Category B \u2014 prescribed books + Form 25 (daily case register) + drug stock inventory.',
+      category: 'specified', profession: 'medical',
+      newsetup: 'no', specPrev: 2800000, specPresumptive: 'no'
+    },
+    'it-consultant': {
+      label: 'IT Consultant',
+      desc: 'Freelance IT consultant. Existing. Highest preceding year receipts \u20B932L. Opting for Sec 44ADA presumptive. Current year \u20B955L.',
+      category: 'specified', profession: 'information-technology',
+      newsetup: 'no', specPrev: 3200000, specPresumptive: 'yes', specCurr: 5500000
+    },
+    'architect': {
+      label: 'Architect Firm',
+      desc: 'Partnership firm of architects. Existing. Highest preceding year receipts \u20B980L. Not opting presumptive.',
+      category: 'specified', profession: 'architectural',
+      newsetup: 'no', specPrev: 8000000, specPresumptive: 'no'
+    },
+    'new-ca': {
+      label: 'New CA (Setup)',
+      desc: 'Newly set up CA practice this Tax Year. Expected receipts \u20B91L (not likely to exceed \u20B91.5L). Category A \u2014 no books prescribed.',
+      category: 'specified', profession: 'accountancy',
+      newsetup: 'yes', specExpected: 100000, specPresumptive: 'no'
+    },
+    'kirana': {
+      label: 'Kirana / Trader',
+      desc: 'Individual kirana store. Income \u20B93L, turnover \u20B985L in preceding years. Opting for Sec 44AD presumptive. Current year \u20B985L.',
+      category: 'nonspec', subtype: 'business', assessee: 'ihuf',
+      incomePrev: 300000, turnoverPrev: 8500000, nsCurr: 8500000, nsPresumptive: 'yes'
+    },
+    'startup': {
+      label: 'New Startup',
+      desc: 'Business newly started. Individual. No preceding year data. Current year turnover \u20B930L. Category C \u2014 below threshold, no books required.',
+      category: 'nonspec', subtype: 'business', assessee: 'ihuf',
+      incomePrev: 0, turnoverPrev: 0, nsCurr: 3000000, nsPresumptive: 'no'
+    },
+    'freelancer': {
+      label: 'Freelancer',
+      desc: 'Non-specified profession (e.g. content writer). Individual. Income \u20B94L, turnover \u20B930L in preceding years. Threshold crossed \u2014 Category D.',
+      category: 'nonspec', subtype: 'profession', assessee: 'ihuf',
+      incomePrev: 400000, turnoverPrev: 3000000, nsCurr: 3500000, nsPresumptive: 'no'
+    }
+  };
+
+  function loadScenario(key, btn) {
+    var s = SCENARIOS[key];
+    if (!s) return;
+
+    var btns = document.querySelectorAll('.scenario-btn');
+    for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('selected'); }
+    if (btn) { btn.classList.add('selected'); }
+
+    setRadio('category', s.category);
+    onCategoryChange();
+
+    if (s.category === 'specified') {
+      document.getElementById('profession-select').value = s.profession || '';
+      setRadio('newsetup', s.newsetup);
+      onNewSetupChange();
+      if (s.newsetup === 'no') {
+        document.getElementById('spec-receipts-prev').value = s.specPrev || '';
+      } else {
+        document.getElementById('spec-expected-curr').value = s.specExpected || '';
+      }
+      setRadio('spec-presumptive', s.specPresumptive || 'no');
+      onSpecPresumptiveChange();
+      if (s.specPresumptive === 'yes') {
+        document.getElementById('spec-receipts-curr').value = s.specCurr || '';
+      }
+    } else {
+      setRadio('subtype', s.subtype);
+      setRadio('ns-assessee', s.assessee);
+      document.getElementById('ns-income-prev').value = s.incomePrev || '';
+      document.getElementById('ns-turnover-prev').value = s.turnoverPrev || '';
+      setRadio('ns-presumptive', s.nsPresumptive || 'no');
+      onNsPresumptiveChange();
+      if (s.nsPresumptive === 'yes') {
+        document.getElementById('ns-receipts-curr').value = s.nsCurr || '';
+        setRadio('ns-lower', s.nsLower || 'no');
+      }
+    }
+
+    var desc = document.getElementById('scenario-desc');
+    desc.style.display = 'block';
+    desc.textContent = s.desc;
+
+    runChecker();
+  }
+
+  function runChecker() {
+    var category = getRadio('category');
+    if (!category) { alert('Please select a category.'); return; }
+
+    var panel = document.getElementById('results-panel');
+    panel.style.display = 'block';
+
+    var catVal = '', catNote = '';
+    var booksVal = '', booksNote = '';
+    var retVal = '7 years from end of relevant Tax Year';
+    var retNote = 'Extended if assessment reopened under Sec 147 \u2192 Sec 279 (IT Act 2025) \u2014 books must continue to be maintained until reassessment is completed.';
+    var chips = [];
+
+    if (category === 'specified') {
+      // --- SPECIFIED PROFESSION ---
+      var profSel = document.getElementById('profession-select').value;
+      if (!profSel) { alert('Please select a profession.'); return; }
+
+      var newSetup = getRadio('newsetup');
+      var specPresumptive = getRadio('spec-presumptive');
+      var specCurr = parseFloat(document.getElementById('spec-receipts-curr').value) || 0;
+      var specPrevRaw = document.getElementById('spec-receipts-prev').value;
+      var specPrev = parseFloat(specPrevRaw) || 0;
+      var specExpectedRaw = document.getElementById('spec-expected-curr').value;
+      var specExpected = parseFloat(specExpectedRaw) || 0;
+
+      if (newSetup === 'no' && specPrevRaw === '') {
+        alert('Please enter the highest gross receipts of the 3 preceding years.');
+        return;
+      }
+      if (newSetup === 'yes' && specExpectedRaw === '') {
+        alert('Please enter the expected gross receipts for the current year.');
+        return;
+      }
+
+      chips.push('Sec 62(1)(a) & 62(4)');
+      chips.push('Rule 6F \u2192 Rule 46');
+
+      // Books determination
+      if (newSetup === 'yes' && specExpected > 150000) {
+        // Category B: newly set up but expected receipts > 1.5L
+        catVal = 'Category B \u2014 Prescribed Books Required';
+        catNote = 'Newly set up specified profession with expected gross receipts exceeding \u20B91,50,000. Prescribed books mandatory under Rule 6F \u2192 Rule 46.';
+        booksVal = 'Prescribed Books Required';
+        booksNote = 'Cash book, journal (if mercantile), ledger, bills/receipts (\u2265\u20B9250), vouchers. Medical professionals also need Form 25 (daily case register) and drug stock inventory.';
+      } else if (newSetup === 'yes') {
+        // Category A: newly set up, expected receipts ≤ 1.5L
+        catVal = 'Category A \u2014 No Books Prescribed';
+        catNote = 'Newly set up specified profession with expected gross receipts not exceeding \u20B91,50,000. Category A \u2014 no books prescribed by the Board.';
+        booksVal = 'No Books Prescribed';
+        booksNote = 'No books of account are prescribed for this category.';
+      } else if (specPrev > 150000) {
+        // Category B: highest of 3 preceding years exceeds 1.5L → at least one year crossed
+        catVal = 'Category B \u2014 Prescribed Books Required';
+        catNote = 'Gross receipts exceeded \u20B91,50,000 in one or more of the 3 preceding Tax Years. Prescribed books mandatory under Rule 46(4).';
+        booksVal = 'Prescribed Books Required';
+        booksNote = 'Cash book, journal (if mercantile), ledger, bills/receipts (\u2265\u20B9250), vouchers. Medical professionals also need Form 25 (daily case register) and drug stock inventory.';
+      } else {
+        // Category A: highest year did not exceed 1.5L → no year crossed
+        catVal = 'Category A \u2014 No Books Prescribed';
+        catNote = 'Gross receipts did not exceed \u20B91,50,000 in any of the 3 preceding Tax Years. Category A \u2014 no books prescribed.';
+        booksVal = 'No Books Prescribed';
+        booksNote = 'No books of account are prescribed for this category.';
+      }
+
+      // Presumptive override
+      if (specPresumptive === 'yes' && specCurr <= 7500000) {
+        booksVal = 'Exempt \u2014 Sec 44ADA \u2192 Sec 58';
+        booksNote = 'Gross receipts \u2264 \u20B975 Lakhs and opting for Sec 44ADA / Sec 58. No books of account required under the presumptive scheme.';
+        chips.push('Sec 44ADA \u2192 Sec 58');
+      }
+
+    } else {
+      // --- NON-SPECIFIED PROFESSION & BUSINESS ---
+      chips.push('Sec 62(1)(b) & 62(2)');
+
+      var subtype = getRadio('subtype');
+      var assesseeType = getRadio('ns-assessee');
+      var incomeRaw = document.getElementById('ns-income-prev').value;
+      var turnoverRaw = document.getElementById('ns-turnover-prev').value;
+      var incomePrev = parseFloat(incomeRaw) || 0;
+      var turnoverPrev = parseFloat(turnoverRaw) || 0;
+      var nsCurr = parseFloat(document.getElementById('ns-receipts-curr').value) || 0;
+      var nsPresumptive = getRadio('ns-presumptive');
+
+      // Inline validation hint
+      if (incomeRaw === '' && turnoverRaw === '' && nsPresumptive !== 'yes') {
+        alert('Please enter the income and/or turnover for the preceding years so the threshold can be tested.');
+        return;
+      }
+
+      var incThresh = (assesseeType === 'ihuf') ? 250000 : 120000;
+      var turnThresh = (assesseeType === 'ihuf') ? 2500000 : 1000000;
+      var thresholdCrossed = (incomePrev > incThresh || turnoverPrev > turnThresh);
+      var nsLower = getRadio('ns-lower');
+      var presLimit = (subtype === 'business') ? 30000000 : 7500000;
+      var presEligible = (nsPresumptive === 'yes' && nsCurr <= presLimit);
+
+      // Books determination
+      if (presEligible && nsLower === 'yes') {
+        // Category D: presumptive assessee declaring lower than deemed profit → must keep books
+        catVal = 'Category D \u2014 Books Required (Presumptive, Lower Profit)';
+        catNote = 'Opting presumptive (Sec 44AD/44ADA \u2192 Sec 58) but declaring profit LOWER than the deemed rate. Falls under Sec 58(2)/61(2) \u2014 books of account must be maintained and audit may apply.';
+        booksVal = 'Books Required \u2014 Not Prescribed';
+        booksNote = 'Keep books of account as necessary to compute income. Tax audit is also likely to apply.';
+        chips.push('Sec 58(2)/61(2)');
+      } else if (presEligible) {
+        catVal = 'Presumptive Scheme \u2014 Sec 44AD/44ADA \u2192 Sec 58';
+        catNote = (thresholdCrossed
+          ? 'Although income/turnover crossed the Sec 62(2) threshold in preceding years, opting presumptive (Sec 58) and declaring profit at or above the deemed rate exempts the assessee from maintaining books for the year.'
+          : 'Turnover/receipts within presumptive limit and declaring profit at or above deemed rate. No books required.');
+        booksVal = 'No Books Required \u2014 Presumptive Sec 58';
+        booksNote = 'No books required under presumptive scheme, provided declared profit \u2265 deemed rate (8%/6% business; 50% profession). If profit is declared LOWER than deemed rate, books become mandatory (Category D). If opting out of 44AD, 5-year lock-out applies.';
+        chips.push((subtype === 'business' ? 'Sec 44AD' : 'Sec 44ADA') + ' \u2192 Sec 58');
+      } else if (thresholdCrossed) {
+        // Category D: threshold crossed, books required but not prescribed
+        var dTrigger = [];
+        if (incomePrev > incThresh) dTrigger.push('Income ' + fmt(incomePrev) + ' > ' + fmt(incThresh) + ' \u2192 crossed');
+        if (turnoverPrev > turnThresh) dTrigger.push('Turnover ' + fmt(turnoverPrev) + ' > ' + fmt(turnThresh) + ' \u2192 crossed');
+        catVal = 'Category D \u2014 Books Required (Not Prescribed)';
+        catNote = dTrigger.join('  \u00B7  ') + '. Threshold crossed in the preceding Tax Years \u2014 books required but not prescribed by the Board.';
+        booksVal = 'Books Required \u2014 Not Prescribed';
+        booksNote = 'Keep such books of account as are necessary to compute taxable income. No specific format is prescribed; the Assessing Officer may direct the particulars to be maintained.';
+      } else {
+        // Category C: below threshold, no books
+        catVal = 'Category C \u2014 No Books Required';
+        catNote = 'Income ' + fmt(incomePrev) + ' \u2264 ' + fmt(incThresh) + '  \u00B7  Turnover ' + fmt(turnoverPrev) + ' \u2264 ' + fmt(turnThresh) + '. Within both thresholds \u2014 no books required.';
+        booksVal = 'No Books Required';
+        booksNote = 'No books of account need be maintained for this category.';
+      }
+    }
+
+    // SET VALUES — single merged result box
+    // Headline: "Category X : <obligation>"
+    var catLabel = catVal.split(' \u2014 ')[0].split(' (')[0];
+    document.getElementById('res-cat-val').textContent = catLabel + ' : ' + booksVal;
+    document.getElementById('res-cat-note').textContent = catNote;
+    document.getElementById('res-books-note').textContent = booksNote;
+
+    // colour the box by obligation
+    var booksRequired = (booksVal.indexOf('No Books') === -1 && booksVal.indexOf('Exempt') === -1);
+    var catBox = document.getElementById('res-category');
+    catBox.className = 'result-box ' + (booksRequired ? 'amber' : 'green');
+
+    // Show retention only when books are actually required to be maintained
+    var retBox = document.getElementById('res-retention');
+    if (booksRequired) {
+      retBox.style.display = 'block';
+      document.getElementById('res-ret-val').textContent = retVal;
+      document.getElementById('res-ret-note').textContent = retNote;
+    } else {
+      retBox.style.display = 'none';
+    }
+
+    var chipContainer = document.getElementById('chip-container');
+    chipContainer.innerHTML = '';
+    for (var c = 0; c < chips.length; c++) {
+      var chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = chips[c];
+      chipContainer.appendChild(chip);
+    }
+
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+</script>
+
+
+</body>
+</html>
