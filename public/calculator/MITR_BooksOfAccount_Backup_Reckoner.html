@@ -963,6 +963,11 @@
     <span class="chip">Rule 6F → Rule 46</span>
   </div>
 
+  <div class="result-box amber" style="margin-bottom:16px;">
+    <div class="result-label">Electronic books? Daily backup also applies</div>
+    <div class="result-note">Where the prescribed books below are maintained electronically, <strong>Rule 46(8)</strong> additionally requires a <strong>daily backup on servers physically in India</strong> (effective <strong>1 April 2026</strong>). See the <strong>Electronic Backup</strong> tab for applicability thresholds, penalty exposure (₹25,000 + Best-Judgment Assessment risk) and the day-end cut-off interpretation.</div>
+  </div>
+
   <!-- SECTION 1: SPECIFIED PROFESSION -->
   <div style="margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">1. Specified Profession</div>
   <div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;">Sec 62(1)(a) & 62(4) · Rule 46</div>
@@ -1481,7 +1486,7 @@
         </tr>
         <tr>
           <td><strong>Consequence of default</strong></td>
-          <td>Penalty ₹25,000 (Sec 271A → Sec 441)</td>
+          <td>Penalty <strong>₹25,000</strong> (Sec 271A → Sec 441); <strong>₹10,000</strong> for incorrect auditor certification; collateral risk: rejection of e-records → <strong>Best-Judgment Assessment</strong> by AO</td>
           <td>Fine ₹50,000 to ₹5,00,000 on the responsible officer (Sec 128(6))</td>
           <td>General penalty up to ₹25,000 under the CGST/SGST Act; unaccounted goods/services may be taxed as supplied (Sec 35(6))</td>
         </tr>
@@ -1546,8 +1551,9 @@
   <div class="card card-accent">
     <div class="card-body">
       <ul class="books-list">
-        <li><div class="icon">→</div><div><strong>Daily back-up</strong> stored on servers <strong>physically located in India</strong> — including a copy of any data held overseas.</div></li>
-        <li><div class="icon">→</div><div>Tiered retention: daily incremental + weekly full (1–4 weeks) · monthly full (6–12 months) · one year-end full (8 years).</div></li>
+        <li><div class="icon">→</div><div><strong>Daily back-up</strong> stored on servers <strong>physically located in India</strong> — including a copy of any data held overseas. Anchored in <strong>Rule 46(8), IT Rules 2026</strong> and mirrored by the MCA's <strong>Companies (Accounts) Rule 3(5)</strong>.</div></li>
+        <li><div class="icon">→</div><div>Document an explicit <strong>day-end cut-off time</strong> (e.g. 23:59 IST) in policy and produce the daily run logs with a <strong>SHA-256 hash</strong> per file to evidence integrity.</div></li>
+        <li><div class="icon">→</div><div>Tiered retention: daily incremental + weekly full (1–4 weeks) · monthly full (6–12 months) · one year-end full (8 years). Daily India-resident snapshots kept for <strong>7 tax years</strong> per <strong>Rule 46(9)</strong>.</div></li>
         <li><div class="icon">→</div><div><strong>3-2-1 rule</strong> (3 copies, 2 media, 1 offsite); <strong>immutable/WORM</strong> long-term archive; <strong>quarterly restore tests</strong>.</div></li>
       </ul>
     </div>
@@ -1636,6 +1642,71 @@
   <div class="result-box amber" style="margin-bottom:16px;">
     <div class="result-label">Rule 46(8), IT Rules 2026 — Legal Baseline</div>
     <div class="result-note">Where books of account are maintained electronically, <strong>Rule 46(8)</strong> (effective <strong>1 April 2026</strong>) requires: (1) the data must remain <strong>accessible in India at all times</strong>; (2) a <strong>daily</strong> back-up — not periodic; and (3) stored on servers <strong>physically located in India</strong>, ruling out overseas-only cloud storage of primary tax records. This applies to all individuals, HUFs and professionals required to keep books under <strong>Section 62</strong>, for records from <strong>Tax Year 2026-27</strong> onwards. The guidance below is practical IT best practice for achieving this — it is not itself a statutory requirement.</div>
+  </div>
+
+  <!-- APPLICABILITY MATRIX -->
+  <div class="card card-accent" style="margin-bottom:12px;">
+    <div class="card-title">Who is covered — Applicability under Sec 62 &amp; Sec 63</div>
+    <div class="card-body">
+      Rule 46(8) reaches every person required to keep books under the Act whose records are maintained electronically. Two thresholds drive coverage:
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">62</div><div><strong>Sec 62 (Maintenance):</strong> Individuals / HUFs in business — income &gt; <strong>₹2.5 L</strong> or turnover &gt; <strong>₹25 L</strong> in any of the 3 preceding years; specified professionals over the statutory limits; <strong>Companies, LLPs and partnership firms — automatic, no turnover threshold.</strong></div></li>
+        <li><div class="icon">63</div><div><strong>Sec 63 (Tax Audit):</strong> Businesses &gt; <strong>₹1 Cr</strong> turnover — scaling to <strong>₹10 Cr</strong> where ≥95% of receipts/payments flow through banking or prescribed electronic modes; professionals &gt; <strong>₹50 L</strong> gross receipts.</div></li>
+      </ul>
+      <div style="margin-top:8px;font-size:13px;color:var(--text-secondary);">Mirrors the MCA <em>Companies (Accounts) Rules</em> daily-backup standard — Rule 46(8) <strong>extends it to all categories</strong> of digital-records taxpayers, not just companies.</div>
+    </div>
+  </div>
+
+  <!-- PENALTY + BJA -->
+  <div class="result-box red" style="margin-bottom:14px;">
+    <div class="result-label">Penalty &amp; Collateral Risk — Why ₹25,000 Isn't the Real Number</div>
+    <div class="result-note">
+      <div class="table-wrap" style="margin-top:8px;">
+        <table class="ref-table">
+          <thead>
+            <tr><th>Failure</th><th>Direct fine</th><th>Collateral statutory impact</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Daily backup not maintained on Indian servers</td>
+              <td><strong>₹25,000</strong></td>
+              <td>Rejection of electronic records → <strong>Best-Judgment Assessment</strong> by AO (estimated profit, disallowed expenses, demand notice).</td>
+            </tr>
+            <tr>
+              <td>Incorrect certification by tax auditor</td>
+              <td><strong>₹10,000</strong></td>
+              <td>Audit qualification; high-risk flag in CBDT insight engines; recurring scrutiny exposure.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;"><strong>The teeth:</strong> if the AO holds that the daily-backup lifecycle was broken or kept on unverified offshore servers, the books can be rejected wholesale — opening the door to <strong>Best-Judgment Assessment</strong> where the AO estimates net profit on industry averages, disallows legitimate expenses, and raises a demand on the inflated figure. The ₹25,000 fine is dwarfed by the BJA exposure.</div>
+    </div>
+  </div>
+
+  <!-- DAILY INTERPRETATION -->
+  <div class="card card-accent" style="margin-bottom:12px;">
+    <div class="card-title">Interpreting "Daily" — The Day-End Cut-off</div>
+    <div class="card-body">
+      Random, weekly or ad-hoc snapshots <strong>do not satisfy</strong> the rule. The phrase "<em>daily at the close of every business day</em>" is read strictly by tax authorities.
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">→</div><div><strong>Single-shift business:</strong> backup at the end of local operational hours.</div></li>
+        <li><div class="icon">→</div><div><strong>24/7 or multi-timezone operations</strong> (e-commerce, IT services, SaaS): fix an explicit cut-off (e.g. <strong>23:59 IST</strong>), <strong>document it in the internal compliance policy</strong>, and run the automated backup at that exact interval every day.</div></li>
+        <li><div class="icon">→</div><div>Auditors look for evidence of the documented cut-off — keep the policy on letterhead and produce it alongside the daily run logs.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CLOUD TRAP -->
+  <div class="card card-accent" style="margin-bottom:16px;">
+    <div class="card-title">The Cloud Trap — Access ≠ Data Residency</div>
+    <div class="card-body">
+      Logging into a foreign-hosted ERP from an office terminal in Mumbai or Pune <strong>does not satisfy</strong> the data-localisation requirement. The physical backup must sit on a server <strong>inside India</strong>.
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">!</div><div>If the primary ERP/SaaS runs on Singapore, Ireland, US-East or any other overseas region, set up an <strong>independent secondary pipeline</strong> that replicates accounting data to an India-resident node daily.</div></li>
+        <li><div class="icon">!</div><div>Secure <strong>written confirmation from the vendor</strong> that both the primary and backup data centres are physically located in India — retain it for the auditor.</div></li>
+      </ul>
+    </div>
   </div>
 
   <!-- BACKUP TYPES -->
@@ -1734,10 +1805,51 @@
     <div class="card-body">Use a managed/cloud service that confirms each backup landed on an India-located server, and schedule a periodic automated restore test so a silent corruption doesn't go unnoticed.</div>
   </div>
 
+  <div class="card card-accent">
+    <div class="card-title">Cryptographic hash on every backup</div>
+    <div class="card-body">Pair each daily backup file with a <strong>SHA-256</strong> (or MD5) hash and a timestamped log capturing execution time, file size, destination IP/location, and the hash. The hash chain is what proves the records weren't edited after the fact — and is exactly what the auditor inspects.</div>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Retention pipeline — Rule 46(9)</div>
+    <div class="card-body">Automate archival rules to preserve the daily India-resident snapshots for the statutory <strong>7 tax years</strong> under <strong>Rule 46(9)</strong>. Pair this with a year-end full backup retained for the longer 8-year window so both Income-tax and Companies Act bases are covered.</div>
+  </div>
+
   <div class="result-box amber" style="margin-top:14px;">
     <div class="result-label">Note</div>
     <div class="result-note">Backup design depends on data volume, industry and whether you run cloud, local or hybrid infrastructure. Treat this as a starting framework and tailor it to your environment.</div>
   </div>
+
+  <!-- CASE STUDIES -->
+  <div style="margin-top:24px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Case Studies — Compliance Failure vs Success</div>
+  <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Two contrasting Rule 46(8) compliance approaches observed in TY 2026-27.</p>
+
+  <div class="card" style="border-left:4px solid var(--red);margin-bottom:12px;">
+    <div class="card-title" style="color:var(--red);">✕ Alpha Logistics Pvt. Ltd. — Distributed Cloud Failure</div>
+    <div class="card-body">
+      Western-India supply-chain operator running a custom open-source ERP on offshore cloud. To cut cloud-egress costs the IT team scheduled <strong>weekly</strong> server snapshots — each snapshot overwriting the previous master image.
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">→</div><div>May 2026 — Assessing Officer requested timestamped per-day backup state for a specific week in April.</div></li>
+        <li><div class="icon">→</div><div>Only a single weekly consolidated image existed; no individual Tuesday/Wednesday state could be produced.</div></li>
+        <li><div class="icon">→</div><div><strong>Result:</strong> records flagged "unverifiable", non-compliance notice under Rule 46(8), deeper integrity audit triggered, regular tax clearance delayed.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--green);margin-bottom:18px;">
+    <div class="card-title" style="color:var(--green);">✓ Nayan Manufacturing — Automated Compliance Success</div>
+    <div class="card-body">
+      Maharashtra mid-sized manufacturer, ₹45 Cr turnover. Migrated systems ahead of the 1 April 2026 deadline.
+      <ul class="books-list" style="margin-top:8px;">
+        <li><div class="icon">→</div><div>Every night at <strong>23:30 IST</strong>: ERP locks the day's transactions → generates a compressed, encrypted backup → SFTP to an <strong>AWS Mumbai</strong> bucket.</div></li>
+        <li><div class="icon">→</div><div>Each run writes a timestamped log with a unique <strong>SHA-256</strong> hash of that day's dataset.</div></li>
+        <li><div class="icon">→</div><div>At statutory audit: 365 daily server receipts + IP-location certificates handed to the auditor.</div></li>
+        <li><div class="icon">→</div><div><strong>Result:</strong> compliance verified cleanly; filings completed without structural flags or delays.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="font-size:12px;color:var(--text-secondary);margin-bottom:18px;">Statutory framing per Affluence Advisory analysis on Taxguru (29 Jun 2026). Refer to the bare text of <strong>Rule 46(8)</strong> and <strong>Rule 46(9)</strong>, Income-tax Rules 2026 for authoritative wording.</div>
 
   <!-- SAMPLE POLICY -->
   <div style="margin-top:24px;margin-bottom:6px;font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Sample Backup Policy — Manufacturing Company</div>
